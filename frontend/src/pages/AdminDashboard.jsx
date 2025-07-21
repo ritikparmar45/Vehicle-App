@@ -25,7 +25,7 @@ const AdminDashboard = () => {
   });
 
   useEffect(() => {
-    fetchStats();
+    Stats();
     fetchUsers();
     fetchServices();
     fetchBookings();
@@ -33,7 +33,7 @@ const AdminDashboard = () => {
 
   const Stats = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/api/admin/stats`);
+      const res = await axios.get(`${API_BASE}/admin/stats`);
       setStats(res.data);
     } catch {
       showAlert('Failed to fetch dashboard stats', 'error');
@@ -42,7 +42,7 @@ const AdminDashboard = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/api/users`);
+      const res = await axios.get(`${API_BASE}/users`);
       setUsers(res.data.users);
     } catch {
       showAlert('Failed to fetch users', 'error');
@@ -51,7 +51,7 @@ const AdminDashboard = () => {
 
   const fetchServices = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/api/services`);
+      const res = await axios.get(`${API_BASE}/services`);
       setServices(res.data.services);
     } catch {
       showAlert('Failed to fetch services', 'error');
@@ -60,7 +60,7 @@ const AdminDashboard = () => {
 
   const fetchBookings = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/api/bookings`);
+      const res = await axios.get(`${API_BASE}/bookings`);
       setBookings(res.data.bookings);
     } catch {
       showAlert('Failed to fetch bookings', 'error');
@@ -69,7 +69,7 @@ const AdminDashboard = () => {
 
   const handleBookingStatusChange = async (id, status) => {
     try {
-      await axios.patch(`${API_BASE}/api/bookings/${id}/status`, { status });
+      await axios.patch(`${API_BASE}/bookings/${id}/status`, { status });
       fetchBookings(); // refresh the list
       showAlert(`Booking marked as ${status}`, 'success');
     } catch (err) {
