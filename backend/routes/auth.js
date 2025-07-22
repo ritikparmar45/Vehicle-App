@@ -7,7 +7,7 @@ import { authenticateToken } from '../middleware/auth.js';
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-this-in-production';
 
-// Register
+// ---------------------- REGISTER ----------------------
 router.post('/register', [
   body('name').trim().isLength({ min: 2 }).withMessage('Name must be at least 2 characters'),
   body('email').isEmail().withMessage('Please provide a valid email'),
@@ -15,16 +15,15 @@ router.post('/register', [
   body('phone').trim().isLength({ min: 10 }).withMessage('Please provide a valid phone number'),
 ], async (req, res) => {
   try {
-    const errors = validationResult(req);// Validate request body
+    const errors = validationResult(req); // Validate request body
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { name, email, password, phone, role, address } = req.body;//get data from frontend whener user registers
-
+    const { name, email, password, phone, role, address } = req.body;
 
     // Check if user already exists
-    const existingUser = await User.findOne({ email }); // check if user already exists in the database
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: 'User already exists with this email' });
     }
@@ -39,11 +38,11 @@ router.post('/register', [
       address
     });
 
-    await user.save();// save the user to the database
+    await user.save();
 
     // Generate JWT token
     const token = jwt.sign(
-      { userId: user._id, role: user.role }, //create a token with user id and role
+      { userId: user._id, role: user.role },
       JWT_SECRET,
       { expiresIn: '7d' }
     );
@@ -51,13 +50,14 @@ router.post('/register', [
     res.status(201).json({
       message: 'User registered successfully',
       token,
-      user: { // We include the user object in the response so that the frontend can get user data immediately — without making another request.
+      user: {
         id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,
         phone: user.phone,
-        address: user.address
+        address: user.address,
+        createdAt: user.createdAt
       }
     });
   } catch (error) {
@@ -66,7 +66,7 @@ router.post('/register', [
   }
 });
 
-// Login
+// ---------------------- LOGIN ----------------------
 router.post('/login', [
   body('email').isEmail().withMessage('Please provide a valid email'),
   body('password').exists().withMessage('Password is required'),
@@ -96,6 +96,10 @@ router.post('/login', [
       return res.status(400).json({ message: 'Account is deactivated' });
     }
 
+    // ✅ Update lastLogin
+    user.lastLogin = new Date();
+    await user.save();
+
     // Generate JWT token
     const token = jwt.sign(
       { userId: user._id, role: user.role },
@@ -103,7 +107,7 @@ router.post('/login', [
       { expiresIn: '7d' }
     );
 
-    res.json({ //send response to the frontend
+    res.json({
       message: 'Login successful',
       token,
       user: {
@@ -112,7 +116,9 @@ router.post('/login', [
         email: user.email,
         role: user.role,
         phone: user.phone,
-        address: user.address
+        address: user.address,
+        lastLogin: user.lastLogin,
+        createdAt: user.createdAt
       }
     });
   } catch (error) {
@@ -121,10 +127,10 @@ router.post('/login', [
   }
 });
 
-// Get current user
+// ---------------------- GET CURRENT USER ----------------------
 router.get('/me', authenticateToken, async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).select('-password');// find the user by id and exclude password from the response
+    const user = await User.findById(req.user._id).select('-password');
     res.json({ user });
   } catch (error) {
     console.error('Get user error:', error);

@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
+import {
+  User, Mail, Phone, MapPin, Lock, Pencil,
+  Save, XCircle, CalendarCheck, LogIn, ShieldCheck
+} from 'lucide-react';
 
 const ProfileDashboard = () => {
   const { user, token } = useAuth();
@@ -10,7 +14,7 @@ const ProfileDashboard = () => {
     email: user?.email || '',
     phone: user?.phone || '',
     address: user?.address || '',
-    password: '', // optional
+    password: '',
   });
 
   const handleChange = (e) => {
@@ -20,18 +24,19 @@ const ProfileDashboard = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
+      const updatedForm = { ...form };
+      if (!updatedForm.password) delete updatedForm.password;
+
       await axios.put(
         `${import.meta.env.VITE_API_URL}/edit-profile`,
-        { ...form },
+        updatedForm,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
       alert('✅ Profile updated successfully!');
       setEditMode(false);
-      window.location.reload(); // optional: reload to show latest info
+      window.location.reload();
     } catch (err) {
       console.error(err);
       alert('❌ Failed to update profile');
@@ -43,99 +48,167 @@ const ProfileDashboard = () => {
   }
 
   return (
-    <div className="max-w-2xl mx-auto mt-12 p-8 bg-white shadow-lg rounded-3xl border border-gray-100">
-      <h2 className="text-3xl font-bold text-blue-700 mb-6 text-center">👤 Profile Dashboard</h2>
+    <div className="max-w-3xl mx-auto mt-14 px-6 py-8 bg-white shadow-2xl rounded-3xl border border-gray-200">
+      <div className="flex flex-col items-center mb-8">
+        <img
+          src={`https://api.dicebear.com/8.x/initials/svg?seed=${encodeURIComponent(user.name || 'User')}`}
+          alt="Avatar"
+          className="w-24 h-24 rounded-full shadow-lg border-2 border-blue-500 mb-4"
+        />
+        <h2 className="text-3xl font-bold text-gray-800">My Profile</h2>
+        <p className="text-sm text-gray-500">Manage your account details and preferences</p>
+      </div>
+
+      {/* Stats Block */}
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8 text-center">
+        <div className="bg-blue-100 text-blue-800 rounded-xl p-4 shadow-md">
+          <User className="mx-auto mb-1" size={20} />
+          <p className="text-xs font-medium">Role: {user.role?.toUpperCase()}</p>
+        </div>
+        <div className="bg-green-100 text-green-800 rounded-xl p-4 shadow-md">
+          <CalendarCheck className="mx-auto mb-1" size={20} />
+          <p className="text-xs font-medium">
+            Joined: {user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-IN', {
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric'
+            }) : 'N/A'}
+          </p>
+        </div>
+        <div className="bg-purple-100 text-purple-800 rounded-xl p-4 shadow-md">
+          <LogIn className="mx-auto mb-1" size={20} />
+          <p className="text-xs font-medium">
+            Last Login: {user.lastLogin ? new Date(user.lastLogin).toLocaleString('en-IN') : 'N/A'}
+          </p>
+        </div>
+        <div className={`rounded-xl p-4 shadow-md ${user.isActive ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}`}>
+          <ShieldCheck className="mx-auto mb-1" size={20} />
+          <p className="text-xs font-medium">Status: {user.isActive ? 'Active' : 'Inactive'}</p>
+        </div>
+      </div>
 
       {!editMode ? (
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-gray-700 text-sm">
-            <div><strong>Role:</strong> {user.role?.toUpperCase()}</div>
-            <div><strong>Name:</strong> {user.name}</div>
-            <div><strong>Email:</strong> {user.email}</div>
-            <div><strong>Phone:</strong> {user.phone}</div>
-            <div><strong>Address:</strong> {user.address || 'Not Provided'}</div>
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-gray-700 text-sm mb-6">
+  <div className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg shadow-sm">
+    <User className="w-5 h-5 text-blue-600" />
+    <div>
+      <p className="text-xs text-gray-500">Name</p>
+      <p className="font-semibold text-gray-800">{user.name}</p>
+    </div>
+  </div>
 
-          <div className="mt-6 text-center">
+  <div className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg shadow-sm">
+    <Mail className="w-5 h-5 text-green-600" />
+    <div>
+      <p className="text-xs text-gray-500">Email</p>
+      <p className="font-semibold text-gray-800">{user.email}</p>
+    </div>
+  </div>
+
+  <div className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg shadow-sm">
+    <Phone className="w-5 h-5 text-yellow-600" />
+    <div>
+      <p className="text-xs text-gray-500">Phone</p>
+      <p className="font-semibold text-gray-800">{user.phone}</p>
+    </div>
+  </div>
+
+  <div className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg shadow-sm">
+    <MapPin className="w-5 h-5 text-red-600" />
+    <div>
+      <p className="text-xs text-gray-500">Address</p>
+      <p className="font-semibold text-gray-800">{user.address || 'Not Provided'}</p>
+    </div>
+  </div>
+</div>
+
+          
+
+          <div className="text-center">
             <button
               onClick={() => setEditMode(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-all"
+              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-medium"
             >
-              ✏️ Edit Profile
+              <Pencil size={16} />
+              Edit Profile
             </button>
           </div>
         </>
       ) : (
-        <>
-          <form onSubmit={handleUpdate} className="space-y-4 text-sm text-gray-700">
-            <div>
-              <label className="block font-medium">Name</label>
-              <input
-                type="text"
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-lg"
-              />
-            </div>
-            <div>
-              <label className="block font-medium">Email</label>
-              <input
-                type="email"
-                name="email"
-                value={form.email}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-lg"
-              />
-            </div>
-            <div>
-              <label className="block font-medium">Phone</label>
-              <input
-                type="text"
-                name="phone"
-                value={form.phone}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-lg"
-              />
-            </div>
-            <div>
-              <label className="block font-medium">Address</label>
-              <input
-                type="text"
-                name="address"
-                value={form.address}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-lg"
-              />
-            </div>
-            <div>
-              <label className="block font-medium">New Password (optional)</label>
-              <input
-                type="password"
-                name="password"
-                value={form.password}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-lg"
-              />
-            </div>
+        <form
+          onSubmit={handleUpdate}
+          className="space-y-4 text-sm text-gray-700 animate-fade-in"
+        >
+          <div>
+            <label className="block font-medium mb-1">Name</label>
+            <input
+              type="text"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+            />
+          </div>
+          <div>
+            <label className="block font-medium mb-1">Email</label>
+            <input
+              type="email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+            />
+          </div>
+          <div>
+            <label className="block font-medium mb-1">Phone</label>
+            <input
+              type="text"
+              name="phone"
+              value={form.phone}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+            />
+          </div>
+          <div>
+            <label className="block font-medium mb-1">Address</label>
+            <input
+              type="text"
+              name="address"
+              value={form.address}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+            />
+          </div>
+          <div>
+            <label className="block font-medium mb-1">New Password (optional)</label>
+            <input
+              type="password"
+              name="password"
+              value={form.password}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+            />
+          </div>
 
-            <div className="flex justify-center gap-4 mt-6">
-              <button
-                type="submit"
-                className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg text-sm font-medium"
-              >
-                ✅ Save
-              </button>
-              <button
-                type="button"
-                onClick={() => setEditMode(false)}
-                className="bg-gray-200 hover:bg-gray-300 px-6 py-2 rounded-lg text-sm"
-              >
-                ❌ Cancel
-              </button>
-            </div>
-          </form>
-        </>
+          <div className="flex justify-center gap-4 pt-4">
+            <button
+              type="submit"
+              className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg text-sm font-medium"
+            >
+              <Save size={16} />
+              Save
+            </button>
+            <button
+              type="button"
+              onClick={() => setEditMode(false)}
+              className="flex items-center gap-2 bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-lg text-sm"
+            >
+              <XCircle size={16} />
+              Cancel
+            </button>
+          </div>
+        </form>
       )}
     </div>
   );
