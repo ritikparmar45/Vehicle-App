@@ -27,12 +27,13 @@ const Dashboard = () => {
       const response = await axios.get(`${API_BASE}/bookings`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setBookings(response.data.bookings);
+      const data = response.data.bookings || [];
+      setBookings(data);
 
-      const total = response.data.bookings.length;
-      const pending = response.data.bookings.filter(b => b.status === 'pending').length;
-      const approved = response.data.bookings.filter(b => b.status === 'approved').length;
-      const completed = response.data.bookings.filter(b => b.status === 'completed').length;
+      const total = data.length;
+      const pending = data.filter(b => b?.status === 'pending').length;
+      const approved = data.filter(b => b?.status === 'approved').length;
+      const completed = data.filter(b => b?.status === 'completed').length;
 
       setStats({ total, pending, approved, completed });
     } catch (err) {
@@ -124,7 +125,7 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Welcome back, {user?.name}!</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Welcome back, {user?.name || 'User'}!</h1>
           <p className="text-gray-600 mt-2">Manage your vehicle service bookings</p>
         </div>
 
@@ -201,37 +202,37 @@ const Dashboard = () => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {bookings.map((booking) => (
-                    <tr key={booking._id} className="hover:bg-gray-50">
+                    <tr key={booking?._id || Math.random()} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">
-                          {booking.service.name}
+                          {booking?.service?.name || 'Unknown Service'}
                         </div>
                         <div className="text-sm text-gray-500">
-                          {booking.vehicleDetails.year} {booking.vehicleDetails.make} {booking.vehicleDetails.model}
+                          {booking?.vehicleDetails?.year || ''} {booking?.vehicleDetails?.make || ''} {booking?.vehicleDetails?.model || ''}
                         </div>
                         <div className="text-xs text-gray-400">
-                          {booking.vehicleDetails.licensePlate}
+                          {booking?.vehicleDetails?.licensePlate || ''}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">
-                          {format(new Date(booking.appointmentDate), 'MMM dd, yyyy')}
+                          {booking?.appointmentDate ? format(new Date(booking.appointmentDate), 'MMM dd, yyyy') : '—'}
                         </div>
                         <div className="text-sm text-gray-500">
-                          {booking.appointmentTime}
+                          {booking?.appointmentTime || '—'}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(booking.status)}`}>
-                          {getStatusIcon(booking.status)}
-                          <span className="capitalize">{booking.status}</span>
+                        <span className={`inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(booking?.status)}`}>
+                          {getStatusIcon(booking?.status)}
+                          <span className="capitalize">{booking?.status || 'unknown'}</span>
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        ₹{booking.totalAmount}
+                        ₹{booking?.totalAmount || 0}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-4">
-                        {booking.status === 'pending' && (
+                        {booking?.status === 'pending' && (
                           <button
                             onClick={() => handleCancelBooking(booking._id)}
                             className="text-red-600 hover:underline"
@@ -239,10 +240,10 @@ const Dashboard = () => {
                             Cancel
                           </button>
                         )}
-                        {booking.status === 'approved' && (
+                        {booking?.status === 'approved' && (
                           <span className="text-green-600">Confirmed</span>
                         )}
-                        {booking.status === 'completed' && (
+                        {booking?.status === 'completed' && (
                           <div className="flex space-x-2">
                             <button
                               onClick={() => handleViewReceipt(booking._id)}
