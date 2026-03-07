@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
     if (vehicleType && vehicleType !== 'both') filter.vehicleType = { $in: [vehicleType, 'both'] };
 
     const services = await Service.find(filter).sort({ createdAt: -1 }); // sort result by newest first
-    res.json({ services });
+    res.json({ services }); //we send this to frontend
   } catch (error) {
     console.error('Get services error:', error);
     res.status(500).json({ message: 'Server error' });

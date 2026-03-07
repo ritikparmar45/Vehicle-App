@@ -38,12 +38,27 @@ const AdminDashboard = () => {
     fetchBookings();
     fetchServices();
   }, []);
+  /*
+    const handleBookingStatusChange = async (bookingId, newStatus) => {
+      await axios.patch(`${API_BASE}/bookings/${bookingId}`, { status: newStatus });
+      fetchBookings();
+      showAlert(`Booking ${newStatus}`, 'success');
+    };*/
 
   const handleBookingStatusChange = async (bookingId, newStatus) => {
-    await axios.put(`${API_BASE}/bookings/${bookingId}`, { status: newStatus });
-    fetchBookings();
-    showAlert(`Booking ${newStatus}`, 'success');
+    try {
+      await axios.patch(`${API_BASE}/bookings/${bookingId}/status`,
+        { status: newStatus },
+        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+      );
+      fetchBookings();
+      showAlert(`Booking ${newStatus}`, 'success');
+    } catch (error) {
+      console.error('Booking status update failed:', error);
+      showAlert('Failed to update booking', 'error');
+    }
   };
+
 
   const showAlert = (message, type) => {
     setAlert({ message, type });
@@ -62,9 +77,8 @@ const AdminDashboard = () => {
 
       {alert && (
         <div
-          className={`p-4 rounded-lg shadow ${
-            alert.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-          }`}
+          className={`p-4 rounded-lg shadow ${alert.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+            }`}
         >
           {alert.message}
         </div>
@@ -179,9 +193,16 @@ const AdminDashboard = () => {
             <input type="checkbox" checked={formData.isActive} onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })} />
             <span>Active</span>
           </label>
-          <button type="submit" className="col-span-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition">
-            Add Service
-          </button>
+          <div className="grid justify-items-center">
+            <button
+              type="submit"
+              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition"
+            >
+              Add Service
+            </button>
+          </div>
+
+
         </form>
 
         <div className="overflow-x-auto mt-4">
@@ -214,9 +235,8 @@ const AdminDashboard = () => {
                         fetchServices();
                         showAlert(`Service ${updated.isActive ? 'activated' : 'deactivated'}`, 'success');
                       }}
-                      className={`${
-                        s.isActive ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-green-600 hover:bg-green-700'
-                      } text-white px-3 py-1 rounded transition`}
+                      className={`${s.isActive ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-green-600 hover:bg-green-700'
+                        } text-white px-3 py-1 rounded transition`}
                     >
                       {s.isActive ? 'Deactivate' : 'Activate'}
                     </button>

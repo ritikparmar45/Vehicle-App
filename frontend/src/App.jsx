@@ -15,7 +15,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import ProfileDashboard from './pages/ProfileDashboard';
 
 const ProtectedRoute = ({ children }) => {
-  const { user, loading } = useAuth();
+  const { user, loading } = useAuth(); //check kro ki user login he ya nhi useAuth ki help se
 
   if (loading) {
     return (

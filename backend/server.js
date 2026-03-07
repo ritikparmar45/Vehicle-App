@@ -8,7 +8,9 @@ import bookingRoutes from './routes/bookings.js';
 import userRoutes from './routes/users.js';
 import adminRoutes from './routes/admin.js';
 import editProfileRoute from './routes/editprofile.js';
-import receiptRoutes from './routes/receipts.js'; // Corrected import statement
+import receiptRoutes from './routes/receipts.js'; 
+import "./jobs/bookingReminder.js";
+
 
 dotenv.config(); // Load environment variables
 
@@ -17,12 +19,12 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors({
-  origin: ['https://vehicle-app-seven.vercel.app', 'http://localhost:5173'], // Allowed origins
+  origin: ['https://vehicle-app-seven.vercel.app', 'http://localhost:5173'], // only this origin can access the API
   methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
-app.use(express.json());
+app.use(express.json()); //it converts incoming requests with JSON payloads into JavaScript objects
 
 // Connect to MongoDB Atlas
 const connectDB = async () => {
@@ -30,8 +32,8 @@ const connectDB = async () => {
     const mongoURI = process.env.MONGODB_URI;
 
     await mongoose.connect(mongoURI, {
-      useNewUrlParser: true,  //
-      useUnifiedTopology: true
+      useNewUrlParser: true,  // Use new URL parser
+      useUnifiedTopology: true //
     });
     console.log('✅ MongoDB connected successfully');
   } catch (error) {

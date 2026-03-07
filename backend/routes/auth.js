@@ -14,8 +14,9 @@ router.post('/register', [
   body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
   body('phone').trim().isLength({ min: 10 }).withMessage('Please provide a valid phone number'),
 ], async (req, res) => {
-  try {
-    const errors = validationResult(req); // Validate request body
+  try
+  {
+    const errors = validationResult(req);//it collects validation errors
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
@@ -28,7 +29,7 @@ router.post('/register', [
       return res.status(400).json({ message: 'User already exists with this email' });
     }
 
-    // Create new user
+    // Create new user in the database
     const user = new User({
       name,
       email,
@@ -38,7 +39,7 @@ router.post('/register', [
       address
     });
 
-    await user.save();
+    await user.save(); 
 
     // Generate JWT token
     const token = jwt.sign(
@@ -97,7 +98,7 @@ router.post('/login', [
     }
 
     // ✅ Update lastLogin
-    user.lastLogin = new Date();
+    user.lastLogin = new Date(); //it sets the last login time to the current date
     await user.save();
 
     // Generate JWT token
