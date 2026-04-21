@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Car, User, LogOut, Settings, Calendar, Users, Menu, X, ChevronRight } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  
+  const isHome = location.pathname === '/';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,7 +37,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'glass shadow-sm py-2' : 'bg-transparent py-4'}`}>
+    <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${(isScrolled || !isHome) ? 'glass shadow-sm py-2' : 'bg-transparent py-4'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-14">
           

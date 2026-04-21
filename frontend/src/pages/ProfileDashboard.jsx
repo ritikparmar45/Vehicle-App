@@ -48,7 +48,7 @@ const ProfileDashboard = () => {
   }
 
   return (
-    <div className="max-w-3xl mx-auto mt-14 px-6 py-8 bg-white shadow-2xl rounded-3xl border border-gray-200">
+    <div className="max-w-3xl mx-auto my-12 px-6 py-8 bg-white shadow-2xl rounded-3xl border border-gray-200">
       <div className="flex flex-col items-center mb-8">
         <img
           src={`https://api.dicebear.com/8.x/initials/svg?seed=${encodeURIComponent(user.name || 'User')}`}

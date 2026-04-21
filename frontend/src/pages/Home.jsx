@@ -49,7 +49,7 @@ const Home = () => {
     <div className="bg-slate-50 min-h-screen">
       
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+      <section className="relative pt-12 pb-20 lg:pt-24 lg:pb-32 overflow-hidden">
         {/* Background Decorative Gradients */}
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 bg-white">
           <div className="absolute -top-[30%] -right-[10%] w-[70%] h-[70%] rounded-full bg-brand-50/80 blur-3xl" />

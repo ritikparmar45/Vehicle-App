@@ -72,7 +72,7 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-10">
+    <div className="py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-10">
       <h1 className="text-4xl font-bold mb-6 text-center text-gray-800">Admin Dashboard</h1>
 
       {alert && (
