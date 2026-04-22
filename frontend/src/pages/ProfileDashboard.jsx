@@ -3,7 +3,8 @@ import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 import {
   User, Mail, Phone, MapPin, Lock, Pencil,
-  Save, XCircle, CalendarCheck, LogIn, ShieldCheck
+  Save, XCircle, CalendarCheck, LogIn, ShieldCheck,
+  Camera, ArrowRight, Shield, BadgeCheck
 } from 'lucide-react';
 
 const ProfileDashboard = () => {
@@ -34,7 +35,7 @@ const ProfileDashboard = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      alert('✅ Profile updated successfully!');
+      // Success alert is usually handled by the layout or local state
       setEditMode(false);
       window.location.reload();
     } catch (err) {
@@ -43,173 +44,200 @@ const ProfileDashboard = () => {
     }
   };
 
-  if (!user) {
-    return <p className="text-center text-red-600 mt-10">Please login to view your profile.</p>;
-  }
+  if (!user) return null;
 
   return (
-    <div className="max-w-3xl mx-auto my-12 px-6 py-8 bg-white shadow-2xl rounded-3xl border border-gray-200">
-      <div className="flex flex-col items-center mb-8">
-        <img
-          src={`https://api.dicebear.com/8.x/initials/svg?seed=${encodeURIComponent(user.name || 'User')}`}
-          alt="Avatar"
-          className="w-24 h-24 rounded-full shadow-lg border-2 border-blue-500 mb-4"
-        />
-        <h2 className="text-3xl font-bold text-gray-800">My Profile</h2>
-        <p className="text-sm text-gray-500">Manage your account details and preferences</p>
-      </div>
-
-      {/* Stats Block */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8 text-center">
-        <div className="bg-blue-100 text-blue-800 rounded-xl p-4 shadow-md">
-          <User className="mx-auto mb-1" size={20} />
-          <p className="text-xs font-medium">Role: {user.role?.toUpperCase()}</p>
+    <div className="min-h-screen bg-slate-50/50 py-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto animate-fade-in">
+      
+      {/* Header / Cover */}
+      <div className="relative mb-24">
+        <div className="h-48 w-full bg-gradient-to-r from-brand-600 to-indigo-500 rounded-[2.5rem] shadow-lg overflow-hidden">
+           <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+           <div className="absolute top-6 right-6">
+              <span className="glass px-4 py-2 rounded-full text-xs font-bold text-white uppercase tracking-widest flex items-center gap-2">
+                <BadgeCheck className="w-4 h-4 text-brand-300" />
+                Verified Account
+              </span>
+           </div>
         </div>
-        <div className="bg-green-100 text-green-800 rounded-xl p-4 shadow-md">
-          <CalendarCheck className="mx-auto mb-1" size={20} />
-          <p className="text-xs font-medium">
-            Joined: {user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-IN', {
-              day: '2-digit',
-              month: 'short',
-              year: 'numeric'
-            }) : 'N/A'}
-          </p>
-        </div>
-        <div className="bg-purple-100 text-purple-800 rounded-xl p-4 shadow-md">
-          <LogIn className="mx-auto mb-1" size={20} />
-          <p className="text-xs font-medium">
-            Last Login: {user.lastLogin ? new Date(user.lastLogin).toLocaleString('en-IN') : 'N/A'}
-          </p>
-        </div>
-        <div className={`rounded-xl p-4 shadow-md ${user.isActive ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}`}>
-          <ShieldCheck className="mx-auto mb-1" size={20} />
-          <p className="text-xs font-medium">Status: {user.isActive ? 'Active' : 'Inactive'}</p>
-        </div>
-      </div>
-
-      {!editMode ? (
-        <>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-gray-700 text-sm mb-6">
-  <div className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg shadow-sm">
-    <User className="w-5 h-5 text-blue-600" />
-    <div>
-      <p className="text-xs text-gray-500">Name</p>
-      <p className="font-semibold text-gray-800">{user.name}</p>
-    </div>
-  </div>
-
-  <div className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg shadow-sm">
-    <Mail className="w-5 h-5 text-green-600" />
-    <div>
-      <p className="text-xs text-gray-500">Email</p>
-      <p className="font-semibold text-gray-800">{user.email}</p>
-    </div>
-  </div>
-
-  <div className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg shadow-sm">
-    <Phone className="w-5 h-5 text-yellow-600" />
-    <div>
-      <p className="text-xs text-gray-500">Phone</p>
-      <p className="font-semibold text-gray-800">{user.phone}</p>
-    </div>
-  </div>
-
-  <div className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg shadow-sm">
-    <MapPin className="w-5 h-5 text-red-600" />
-    <div>
-      <p className="text-xs text-gray-500">Address</p>
-      <p className="font-semibold text-gray-800">{user.address || 'Not Provided'}</p>
-    </div>
-  </div>
-</div>
-
+        
+        {/* Profile Info Overlay */}
+        <div className="absolute -bottom-16 left-8 md:left-12 flex flex-col md:flex-row md:items-end gap-6">
+          <div className="relative group">
+            <img
+              src={`https://api.dicebear.com/8.x/initials/svg?seed=${encodeURIComponent(user.name || 'User')}`}
+              alt="Avatar"
+              className="w-32 h-32 rounded-[2rem] shadow-2xl border-4 border-white bg-white p-1 transition-transform group-hover:scale-105"
+            />
+            <button className="absolute bottom-2 right-2 p-2 bg-brand-600 text-white rounded-xl shadow-lg hover:bg-brand-700 transition-all opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100">
+              <Camera className="w-4 h-4" />
+            </button>
+          </div>
           
+          <div className="mb-4">
+             <h1 className="text-3xl font-heading font-extrabold text-slate-900 tracking-tight">{user.name}</h1>
+             <p className="text-slate-500 font-medium flex items-center gap-2">
+               <Shield className="w-4 h-4 text-brand-500" />
+               {user.role?.toUpperCase()} • Member since {new Date(user.createdAt).getFullYear()}
+             </p>
+          </div>
+        </div>
+      </div>
 
-          <div className="text-center">
-            <button
-              onClick={() => setEditMode(true)}
-              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-medium"
-            >
-              <Pencil size={16} />
-              Edit Profile
-            </button>
+      <div className="grid md:grid-cols-3 gap-8">
+        
+        {/* Sidebar Info */}
+        <div className="space-y-6">
+          <div className="bg-white rounded-3xl p-6 border border-slate-100 card-shadow">
+             <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Account Status</h3>
+             <div className="space-y-4">
+               <div className="flex items-center justify-between">
+                 <span className="text-sm font-medium text-slate-600">Active</span>
+                 <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]"></div>
+               </div>
+               <div className="flex items-center justify-between">
+                 <span className="text-sm font-medium text-slate-600">Level</span>
+                 <span className="text-xs font-black text-brand-600 bg-brand-50 px-2 py-0.5 rounded">PLATINUM</span>
+               </div>
+             </div>
           </div>
-        </>
-      ) : (
-        <form
-          onSubmit={handleUpdate}
-          className="space-y-4 text-sm text-gray-700 animate-fade-in"
-        >
-          <div>
-            <label className="block font-medium mb-1">Name</label>
-            <input
-              type="text"
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-            />
+          
+          <div className="bg-slate-900 text-white rounded-3xl p-6 card-shadow relative overflow-hidden group">
+             <div className="absolute -right-6 -bottom-6 opacity-10 transition-transform group-hover:scale-110">
+               <ShieldCheck className="w-24 h-24" />
+             </div>
+             <h3 className="text-lg font-bold mb-2">Protection Plan</h3>
+             <p className="text-slate-400 text-sm mb-4">Your premium warranty is active until Dec 2026.</p>
+             <button className="text-xs font-bold text-brand-400 flex items-center gap-2 group-hover:gap-3 transition-all">
+               View Details <ArrowRight className="w-3 h-3" />
+             </button>
           </div>
-          <div>
-            <label className="block font-medium mb-1">Email</label>
-            <input
-              type="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-            />
-          </div>
-          <div>
-            <label className="block font-medium mb-1">Phone</label>
-            <input
-              type="text"
-              name="phone"
-              value={form.phone}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-            />
-          </div>
-          <div>
-            <label className="block font-medium mb-1">Address</label>
-            <input
-              type="text"
-              name="address"
-              value={form.address}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-            />
-          </div>
-          <div>
-            <label className="block font-medium mb-1">New Password (optional)</label>
-            <input
-              type="password"
-              name="password"
-              value={form.password}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-            />
-          </div>
+        </div>
 
-          <div className="flex justify-center gap-4 pt-4">
-            <button
-              type="submit"
-              className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg text-sm font-medium"
-            >
-              <Save size={16} />
-              Save
-            </button>
-            <button
-              type="button"
-              onClick={() => setEditMode(false)}
-              className="flex items-center gap-2 bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-lg text-sm"
-            >
-              <XCircle size={16} />
-              Cancel
-            </button>
-          </div>
-        </form>
-      )}
+        {/* Main Profile Details */}
+        <div className="md:col-span-2">
+           <div className="bg-white rounded-[2rem] p-8 border border-slate-100 card-shadow h-full">
+              <div className="flex items-center justify-between mb-8">
+                 <h2 className="text-2xl font-heading font-bold text-slate-900">Personal Details</h2>
+                 {!editMode && (
+                   <button
+                     onClick={() => setEditMode(true)}
+                     className="flex items-center gap-2 text-brand-600 hover:bg-brand-50 px-4 py-2 rounded-xl transition-all font-bold text-sm"
+                   >
+                     <Pencil className="w-4 h-4" /> Edit Profile
+                   </button>
+                 )}
+              </div>
+
+              {!editMode ? (
+                <div className="grid sm:grid-cols-2 gap-8">
+                   {[
+                     { label: 'Full Name', val: user.name, icon: <User />, color: 'text-brand-600' },
+                     { label: 'Email Address', val: user.email, icon: <Mail />, color: 'text-indigo-600' },
+                     { label: 'Contact Number', val: user.phone, icon: <Phone />, color: 'text-brand-600' },
+                     { label: 'Primary Address', val: user.address || 'Not Provided', icon: <MapPin />, color: 'text-rose-600' },
+                   ].map((item, idx) => (
+                     <div key={idx} className="group">
+                        <div className="flex items-center gap-3 mb-2">
+                           <div className={`p-2 rounded-lg bg-slate-50 ${item.color} group-hover:bg-brand-600 group-hover:text-white transition-all`}>
+                             {React.cloneElement(item.icon, { className: 'w-4 h-4' })}
+                           </div>
+                           <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{item.label}</span>
+                        </div>
+                        <p className="text-slate-900 font-bold ml-11">{item.val}</p>
+                     </div>
+                   ))}
+                   
+                   <div className="sm:col-span-2 pt-8 mt-8 border-t border-slate-50 flex items-center justify-between text-slate-400 text-xs font-medium">
+                      <div className="flex items-center gap-2">
+                         <LogIn className="w-4 h-4" />
+                         Last session: {user.lastLogin ? new Date(user.lastLogin).toLocaleString() : 'Just now'}
+                      </div>
+                      <div className="flex items-center gap-2">
+                         <CalendarCheck className="w-4 h-4" />
+                         Member since: {new Date(user.createdAt).toLocaleDateString()}
+                      </div>
+                   </div>
+                </div>
+              ) : (
+                <form onSubmit={handleUpdate} className="space-y-6 animate-fade-in">
+                  <div className="grid sm:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Name</label>
+                      <input
+                        type="text"
+                        name="name"
+                        value={form.name}
+                        onChange={handleChange}
+                        className="w-full bg-slate-50 border-none rounded-xl p-3 text-sm focus:ring-2 focus:ring-brand-500 font-bold text-slate-900 outline-none transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Email</label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={form.email}
+                        onChange={handleChange}
+                        className="w-full bg-slate-50 border-none rounded-xl p-3 text-sm focus:ring-2 focus:ring-brand-500 font-bold text-slate-900 outline-none transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Phone</label>
+                      <input
+                        type="text"
+                        name="phone"
+                        value={form.phone}
+                        onChange={handleChange}
+                        className="w-full bg-slate-50 border-none rounded-xl p-3 text-sm focus:ring-2 focus:ring-brand-500 font-bold text-slate-900 outline-none transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Address</label>
+                      <input
+                        type="text"
+                        name="address"
+                        value={form.address}
+                        onChange={handleChange}
+                        className="w-full bg-slate-50 border-none rounded-xl p-3 text-sm focus:ring-2 focus:ring-brand-500 font-bold text-slate-900 outline-none transition-all"
+                      />
+                    </div>
+                    <div className="sm:col-span-2">
+                       <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">New Password (optional)</label>
+                       <div className="relative">
+                         <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                         <input
+                           type="password"
+                           name="password"
+                           value={form.password}
+                           onChange={handleChange}
+                           placeholder="••••••••"
+                           className="w-full bg-slate-50 border-none rounded-xl py-3 pl-10 pr-3 text-sm focus:ring-2 focus:ring-brand-500 font-bold text-slate-900 outline-none transition-all"
+                         />
+                       </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-4 pt-6">
+                    <button
+                      type="submit"
+                      className="flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-brand-600/20 active:scale-95 transition-all"
+                    >
+                      <Save className="w-4 h-4" /> Save Changes
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEditMode(false)}
+                      className="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-600 px-8 py-3 rounded-xl font-bold active:scale-95 transition-all"
+                    >
+                      <XCircle className="w-4 h-4" /> Cancel
+                    </button>
+                  </div>
+                </form>
+              )}
+           </div>
+        </div>
+      </div>
     </div>
   );
 };

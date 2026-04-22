@@ -15,12 +15,16 @@ import AdminDashboard from './pages/AdminDashboard';
 import ProfileDashboard from './pages/ProfileDashboard';
 
 const ProtectedRoute = ({ children }) => {
-  const { user, loading } = useAuth(); //check kro ki user login he ya nhi useAuth ki help se
+  const { user, loading } = useAuth();
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
+        <div className="relative">
+          <div className="w-16 h-16 border-4 border-brand-100 rounded-full"></div>
+          <div className="w-16 h-16 border-4 border-brand-600 border-t-transparent rounded-full animate-spin absolute top-0 left-0"></div>
+        </div>
+        <p className="mt-6 text-xs font-black text-slate-400 uppercase tracking-[0.2em] animate-pulse">Authenticating...</p>
       </div>
     );
   }
@@ -33,8 +37,12 @@ const PublicRoute = ({ children }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
+        <div className="relative">
+          <div className="w-16 h-16 border-4 border-brand-100 rounded-full"></div>
+          <div className="w-16 h-16 border-4 border-brand-600 border-t-transparent rounded-full animate-spin absolute top-0 left-0"></div>
+        </div>
+        <p className="mt-6 text-xs font-black text-slate-400 uppercase tracking-[0.2em] animate-pulse">Syncing Garage...</p>
       </div>
     );
   }
@@ -46,7 +54,7 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="min-h-screen bg-gray-50 flex flex-col">
+        <div className="min-h-screen bg-slate-50/50 flex flex-col selection:bg-brand-600 selection:text-white">
           <Navbar />
           <main className="flex-grow pt-20">
             <Routes>

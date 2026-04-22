@@ -1,6 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Car, Calendar, Clock, CreditCard, ArrowLeft, AlertCircle, CheckCircle } from 'lucide-react';
+import { 
+  Car, 
+  Calendar, 
+  Clock, 
+  CreditCard, 
+  ArrowLeft, 
+  AlertCircle, 
+  CheckCircle, 
+  ChevronRight, 
+  Info,
+  ShieldCheck,
+  User,
+  Settings,
+  Sparkles
+} from 'lucide-react';
 import axios from 'axios';
 import { format, addDays } from 'date-fns';
 
@@ -27,13 +41,12 @@ const BookService = () => {
   });
 
   const timeSlots = [
-    '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
-    '12:00', '12:30', '13:00', '13:30', '14:00', '14:30',
-    '15:00', '15:30', '16:00', '16:30', '17:00'
+    '09:00 AM', '09:30 AM', '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM',
+    '12:00 PM', '12:30 PM', '01:00 PM', '01:30 PM', '02:00 PM', '02:30 PM',
+    '03:00 PM', '03:30 PM', '04:00 PM', '04:30 PM', '05:00 PM'
   ];
 
   const API = import.meta.env.VITE_API_URL;
-
 
   useEffect(() => {
     fetchServices();
@@ -45,7 +58,7 @@ const BookService = () => {
       setServices(response.data.services || []);
     } catch (error) {
       console.error('Error fetching services:', error);
-      setError('Failed to fetch services.');
+      setError('Failed to fetch services catalog.');
     }
   };
 
@@ -84,10 +97,10 @@ const BookService = () => {
     try {
       await axios.post(`${API}/bookings`, formData);
       setSuccess(true);
-      setTimeout(() => navigate('/dashboard'), 2000);
+      setTimeout(() => navigate('/dashboard'), 2500);
     } catch (err) {
       console.error(err);
-      setError(err?.response?.data?.message || 'Failed to create booking');
+      setError(err?.response?.data?.message || 'Booking submission failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -108,90 +121,150 @@ const BookService = () => {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full text-center">
-          <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Booking Confirmed!</h2>
-          <p className="text-gray-600 mb-4">Your service has been booked successfully.</p>
-          <div className="animate-pulse text-blue-600">Redirecting to dashboard...</div>
+      <div className="min-h-screen bg-white flex items-center justify-center p-4">
+        <div className="max-w-md w-full text-center animate-fade-in">
+          <div className="w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-8 animate-bounce">
+            <CheckCircle className="h-12 w-12 text-emerald-500" />
+          </div>
+          <h2 className="text-3xl font-heading font-extrabold text-slate-900 mb-4 tracking-tight">Booking Confirmed!</h2>
+          <p className="text-slate-500 font-medium mb-10 leading-relaxed">
+            Your appointment has been successfully scheduled. We've sent a confirmation to your email.
+          </p>
+          <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 mb-10 flex items-center gap-4 text-left">
+             <div className="bg-brand-600 p-2 rounded-lg text-white"><Calendar className="w-5 h-5" /></div>
+             <div>
+               <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Scheduled For</p>
+               <p className="font-bold text-slate-900">{format(new Date(formData.appointmentDate), 'PPP')} @ {formData.appointmentTime}</p>
+             </div>
+          </div>
+          <p className="text-brand-600 font-bold animate-pulse text-sm">Redirecting to your garage...</p>
         </div>
       </div>
     );
   }
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <button
-          onClick={() => navigate('/dashboard')}
-          className="mb-6 flex items-center space-x-2 text-gray-600 hover:text-gray-900"
-        >
-          <ArrowLeft className="h-5 w-5" />
-          <span>Back to Dashboard</span>
-        </button>
+  const steps = [
+    { num: 1, label: 'Service', icon: <Settings /> },
+    { num: 2, label: 'Vehicle', icon: <Car /> },
+    { num: 3, label: 'Schedule', icon: <Calendar /> },
+    { num: 4, label: 'Review', icon: <CheckCircle /> },
+  ];
 
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-          {/* Progress Bar */}
-          <div className="px-8 py-6 bg-gray-50 border-b">
-            <div className="flex items-center justify-between">
-              {[1, 2, 3, 4].map((step) => (
-                <div key={step} className="flex items-center">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${currentStep >= step ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'
-                    }`}>
-                    {step}
+  return (
+    <div className="min-h-screen bg-slate-50/50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-5xl mx-auto">
+        
+        {/* Header Navigation */}
+        <div className="flex items-center justify-between mb-12">
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="group flex items-center gap-3 text-slate-600 hover:text-brand-600 font-bold transition-all"
+          >
+            <div className="w-10 h-10 bg-white shadow-sm rounded-xl flex items-center justify-center border border-slate-100 group-hover:bg-brand-50 transition-colors">
+              <ArrowLeft className="h-5 w-5" />
+            </div>
+            <span>Exit to Dashboard</span>
+          </button>
+          
+          <div className="hidden sm:flex items-center gap-4">
+             {steps.map((s, idx) => (
+               <React.Fragment key={s.num}>
+                 <div className={`flex items-center gap-2 ${currentStep >= s.num ? 'text-brand-600' : 'text-slate-400'}`}>
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-[10px] font-black border-2 transition-all ${currentStep >= s.num ? 'bg-brand-600 border-brand-600 text-white shadow-lg shadow-brand-600/20' : 'bg-white border-slate-200'}`}>
+                       {s.num}
+                    </div>
+                    <span className="text-xs font-black uppercase tracking-widest mt-0.5">{s.label}</span>
+                 </div>
+                 {idx < steps.length - 1 && <div className={`w-6 h-px ${currentStep > s.num ? 'bg-brand-600' : 'bg-slate-200'}`} />}
+               </React.Fragment>
+             ))}
+          </div>
+        </div>
+
+        <div className="bg-white rounded-[2.5rem] border border-slate-100 card-shadow overflow-hidden grid lg:grid-cols-3">
+          
+          {/* Side Info Panel */}
+          <div className="bg-slate-900 p-10 text-white relative overflow-hidden hidden lg:block">
+             <div className="absolute top-0 right-0 p-8 opacity-10">
+               <Sparkles className="w-32 h-32" />
+             </div>
+             
+             <div className="relative z-10 h-full flex flex-col">
+               <h2 className="text-3xl font-heading font-extrabold mb-8">Premium <br/> Concierge</h2>
+               
+               <div className="space-y-8 flex-grow">
+                  <div className="flex gap-4">
+                     <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center shrink-0 border border-white/5"><ShieldCheck className="w-6 h-6 text-brand-400" /></div>
+                     <div>
+                       <h4 className="font-bold text-sm">Certified Care</h4>
+                       <p className="text-xs text-slate-400 mt-1 leading-relaxed">All services performed by factory trained master technicians.</p>
+                     </div>
                   </div>
-                  {step < 4 && (
-                    <div className={`h-1 w-24 mx-4 ${currentStep > step ? 'bg-blue-600' : 'bg-gray-200'
-                      }`} />
-                  )}
-                </div>
-              ))}
-            </div>
-            <div className="flex justify-between mt-2 text-sm">
-              <span className={currentStep >= 1 ? 'text-blue-600' : 'text-gray-500'}>Select Service</span>
-              <span className={currentStep >= 2 ? 'text-blue-600' : 'text-gray-500'}>Vehicle Details</span>
-              <span className={currentStep >= 3 ? 'text-blue-600' : 'text-gray-500'}>Schedule</span>
-              <span className={currentStep >= 4 ? 'text-blue-600' : 'text-gray-500'}>Confirm</span>
-            </div>
+                  <div className="flex gap-4">
+                     <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center shrink-0 border border-white/5"><CreditCard className="w-6 h-6 text-brand-400" /></div>
+                     <div>
+                       <h4 className="font-bold text-sm">Transparent Pricing</h4>
+                       <p className="text-xs text-slate-400 mt-1 leading-relaxed">No surprises at pickup. Genuine parts & oil at honest rates.</p>
+                     </div>
+                  </div>
+               </div>
+
+               {selectedService && (
+                 <div className="bg-white/5 border border-white/10 rounded-3xl p-6 mt-8">
+                    <p className="text-xs font-bold text-brand-400 uppercase tracking-widest mb-3">Active Selection</p>
+                    <h5 className="font-bold text-lg">{selectedService.name}</h5>
+                    <div className="flex items-center justify-between mt-4">
+                       <span className="text-2xl font-black">₹{selectedService.price}</span>
+                       <span className="text-xs font-bold text-slate-400">{selectedService.duration} MINS</span>
+                    </div>
+                 </div>
+               )}
+             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="p-8">
+          {/* Form Content */}
+          <form onSubmit={handleSubmit} className="lg:col-span-2 p-8 sm:p-12">
             {error && (
-              <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 flex items-center space-x-2">
-                <AlertCircle className="h-5 w-5 text-red-500" />
-                <span className="text-red-700 text-sm">{error}</span>
+              <div className="mb-8 bg-rose-50 border border-rose-100 rounded-2xl p-4 flex items-center gap-3 animate-slide-up">
+                <AlertCircle className="h-5 w-5 text-rose-600 flex-shrink-0" />
+                <span className="text-rose-800 text-xs font-bold">{error}</span>
               </div>
             )}
 
             {/* Step 1: Select Service */}
             {currentStep === 1 && (
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Select a Service</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="animate-fade-in space-y-8">
+                <div>
+                  <h2 className="text-3xl font-heading font-extrabold text-slate-900 tracking-tight mb-2">Choose your service</h2>
+                  <p className="text-slate-500 font-medium">Select the best catalog option for your vehicle's current needs.</p>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {services.map((service) => (
                     <div
                       key={service._id}
-                      className={`border-2 rounded-lg p-6 cursor-pointer transition-all ${formData.service === service._id
-                          ? 'border-blue-500 bg-blue-50'
-                          : 'border-gray-200 hover:border-gray-300'
+                      className={`relative border-2 rounded-[2rem] p-6 cursor-pointer transition-all duration-300 group ${formData.service === service._id
+                          ? 'border-brand-600 bg-brand-50 shadow-xl shadow-brand-600/5'
+                          : 'border-slate-100 hover:border-slate-200 hover:bg-slate-50'
                         }`}
                       onClick={() => handleServiceSelect(service._id)}
                     >
-                      <div className="flex justify-between items-start mb-4">
-                        <h3 className="text-lg font-semibold text-gray-900">{service.name}</h3>
-                        <div className="text-right">
-                          <div className="text-2xl font-bold text-blue-600">${service.price}</div>
-                          <div className="text-sm text-gray-500">{service.duration} min</div>
+                      {formData.service === service._id && (
+                        <div className="absolute top-4 right-4 text-brand-600">
+                           <CheckCircle className="w-5 h-5 fill-brand-600 text-white" />
                         </div>
+                      )}
+                      
+                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-6 transition-colors ${formData.service === service._id ? 'bg-brand-600 text-white' : 'bg-slate-50 text-slate-400 group-hover:bg-white group-hover:text-brand-600'}`}>
+                         <Settings className="w-6 h-6" />
                       </div>
-                      <p className="text-gray-600 text-sm mb-4">{service.description}</p>
-                      <div className="flex items-center space-x-2">
-                        <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded-full text-xs font-medium capitalize">
-                          {service.category}
-                        </span>
-                        <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium capitalize">
-                          {service.vehicleType}
-                        </span>
+                      
+                      <h3 className="text-lg font-bold text-slate-900 mb-1 group-hover:text-brand-700 transition-colors">{service.name}</h3>
+                      <div className="flex items-center gap-3 mt-4">
+                         <span className="text-xl font-black text-slate-900 group-hover:text-brand-600 transition-colors">₹{service.price}</span>
+                         <span className="text-xs font-bold text-slate-400 uppercase tracking-widest leading-none pt-1">{service.duration} mins</span>
+                      </div>
+                      <div className="mt-4 flex gap-2">
+                        <span className="bg-white/60 border border-slate-100 text-slate-500 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest">{service.category}</span>
                       </div>
                     </div>
                   ))}
@@ -201,82 +274,78 @@ const BookService = () => {
 
             {/* Step 2: Vehicle Details */}
             {currentStep === 2 && (
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Vehicle Details</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="animate-fade-in space-y-8">
+                <div>
+                  <h2 className="text-3xl font-heading font-extrabold text-slate-900 tracking-tight mb-2">Vehicle Profile</h2>
+                  <p className="text-slate-500 font-medium">Tell us more about the machine we'll be working on.</p>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="sm:col-span-2">
+                    <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">
                       Vehicle Type
                     </label>
-                    <select
-                      name="vehicle.type"
-                      value={formData.vehicleDetails.type}
-                      onChange={handleInputChange}
-                      className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      required
-                    >
-                      <option value="car">Car</option>
-                      <option value="bike">Motorcycle</option>
-                    </select>
+                    <div className="grid grid-cols-2 gap-4">
+                       {['car', 'bike'].map(type => (
+                         <button
+                           key={type}
+                           type="button"
+                           onClick={() => setFormData(p => ({ ...p, vehicleDetails: { ...p.vehicleDetails, type } }))}
+                           className={`py-4 rounded-2xl font-bold uppercase tracking-widest text-xs border-2 transition-all flex items-center justify-center gap-3 ${formData.vehicleDetails.type === type ? 'border-brand-600 bg-brand-50 text-brand-600 shadow-lg shadow-brand-600/5' : 'border-slate-100 text-slate-400 hover:border-slate-200 hover:text-slate-600'}`}
+                         >
+                           {type === 'car' ? <Car className="w-4 h-4" /> : <Settings className="w-4 h-4" />}
+                           {type}
+                         </button>
+                       ))}
+                    </div>
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Make
-                    </label>
+                  <div className="space-y-2">
+                    <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Make / Brand</label>
                     <input
                       type="text"
                       name="vehicle.make"
                       value={formData.vehicleDetails.make}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="e.g., Toyota, Honda"
+                      className="w-full bg-slate-50 border-none rounded-2xl p-4 text-sm focus:ring-2 focus:ring-brand-500 font-bold text-slate-900 outline-none transition-all"
+                      placeholder="e.g., Tesla, BMW"
                       required
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Model
-                    </label>
+                  <div className="space-y-2">
+                    <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Model Name</label>
                     <input
                       type="text"
                       name="vehicle.model"
                       value={formData.vehicleDetails.model}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="e.g., Camry, Civic"
+                      className="w-full bg-slate-50 border-none rounded-2xl p-4 text-sm focus:ring-2 focus:ring-brand-500 font-bold text-slate-900 outline-none transition-all"
+                      placeholder="e.g., Model S, M3"
                       required
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Year
-                    </label>
+                  <div className="space-y-2">
+                    <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Build Year</label>
                     <input
                       type="number"
                       name="vehicle.year"
                       value={formData.vehicleDetails.year}
                       onChange={handleInputChange}
-                      min="1990"
-                      max={new Date().getFullYear() + 1}
-                      className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full bg-slate-50 border-none rounded-2xl p-4 text-sm focus:ring-2 focus:ring-brand-500 font-bold text-slate-900 outline-none transition-all"
                       required
                     />
                   </div>
 
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      License Plate
-                    </label>
+                  <div className="space-y-2">
+                    <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">License Plate</label>
                     <input
                       type="text"
                       name="vehicle.licensePlate"
                       value={formData.vehicleDetails.licensePlate}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="Enter license plate number"
+                      className="w-full bg-slate-50 border-none rounded-2xl p-4 text-sm focus:ring-2 focus:ring-brand-500 font-bold text-slate-900 outline-none transition-all uppercase"
+                      placeholder="XYZ 1234"
                       required
                     />
                   </div>
@@ -286,51 +355,44 @@ const BookService = () => {
 
             {/* Step 3: Schedule */}
             {currentStep === 3 && (
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Schedule Appointment</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="animate-fade-in space-y-8">
+                <div>
+                  <h2 className="text-3xl font-heading font-extrabold text-slate-900 tracking-tight mb-2">Set the date</h2>
+                  <p className="text-slate-500 font-medium">Choose a convenient slot for your visit.</p>
+                </div>
+                
+                <div className="space-y-8">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Select Date
-                    </label>
-                    <div className="grid grid-cols-2 gap-2">
-                      {generateDateOptions().map((date) => (
-                        <button
-                          key={date.toISOString()}
-                          type="button"
-                          onClick={() => setFormData(prev => ({
-                            ...prev,
-                            appointmentDate: format(date, 'yyyy-MM-dd')
-                          }))}
-                          className={`p-3 text-sm border rounded-lg text-center transition-colors ${formData.appointmentDate === format(date, 'yyyy-MM-dd')
-                              ? 'border-blue-500 bg-blue-50 text-blue-700'
-                              : 'border-gray-200 hover:border-gray-300'
-                            }`}
-                        >
-                          <div className="font-medium">{format(date, 'MMM dd')}</div>
-                          <div className="text-gray-500">{format(date, 'EEE')}</div>
-                        </button>
-                      ))}
+                    <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-4 ml-1">Available Dates (Next 14 Days)</label>
+                    <div className="flex gap-3 overflow-x-auto pb-4 custom-scrollbar">
+                      {generateDateOptions().map((date) => {
+                         const dateStr = format(date, 'yyyy-MM-dd');
+                         const isSelected = formData.appointmentDate === dateStr;
+                         return (
+                          <button
+                            key={dateStr}
+                            type="button"
+                            onClick={() => setFormData(prev => ({ ...prev, appointmentDate: dateStr }))}
+                            className={`min-w-[100px] p-4 flex flex-col items-center rounded-2xl transition-all border-2 ${isSelected ? 'border-brand-600 bg-brand-50 text-brand-600 shadow-xl shadow-brand-600/5' : 'border-slate-100 bg-white hover:border-slate-300'}`}
+                          >
+                             <span className="text-[10px] font-black uppercase tracking-widest opacity-60 mb-1">{format(date, 'MMM')}</span>
+                             <span className="text-2xl font-black mb-1">{format(date, 'dd')}</span>
+                             <span className="text-[10px] font-black uppercase tracking-widest">{format(date, 'EEE')}</span>
+                          </button>
+                         );
+                      })}
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Select Time
-                    </label>
-                    <div className="grid grid-cols-3 gap-2 max-h-64 overflow-y-auto">
+                    <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-4 ml-1">Time Slots</label>
+                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
                       {timeSlots.map((time) => (
                         <button
                           key={time}
                           type="button"
-                          onClick={() => setFormData(prev => ({
-                            ...prev,
-                            appointmentTime: time
-                          }))}
-                          className={`p-2 text-sm border rounded-lg transition-colors ${formData.appointmentTime === time
-                              ? 'border-blue-500 bg-blue-50 text-blue-700'
-                              : 'border-gray-200 hover:border-gray-300'
-                            }`}
+                          onClick={() => setFormData(prev => ({ ...prev, appointmentTime: time }))}
+                          className={`p-3 text-[10px] sm:text-xs font-bold rounded-xl border-2 transition-all ${formData.appointmentTime === time ? 'border-brand-600 bg-brand-50 text-brand-600 shadow-lg shadow-brand-600/5' : 'border-slate-50 text-slate-600 bg-slate-50 hover:border-slate-200'}`}
                         >
                           {time}
                         </button>
@@ -339,17 +401,15 @@ const BookService = () => {
                   </div>
                 </div>
 
-                <div className="mt-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Additional Notes (Optional)
-                  </label>
+                <div className="pt-6">
+                  <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Service Instructions (Optional)</label>
                   <textarea
                     name="notes"
                     value={formData.notes}
                     onChange={handleInputChange}
-                    rows={3}
-                    className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Any specific requirements or issues with your vehicle..."
+                    rows={4}
+                    className="w-full bg-slate-50 border-none rounded-2xl p-4 text-sm focus:ring-2 focus:ring-brand-500 font-medium text-slate-900 outline-none transition-all resize-none"
+                    placeholder="E.g., Minor scratch on door, check front brake noise..."
                   />
                 </div>
               </div>
@@ -357,78 +417,64 @@ const BookService = () => {
 
             {/* Step 4: Confirm */}
             {currentStep === 4 && (
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Confirm Booking</h2>
-                <div className="bg-gray-50 rounded-lg p-6 mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Booking Summary</h3>
-
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-600">Service:</span>
-                      <span className="font-medium">{selectedService?.name}</span>
+              <div className="animate-fade-in space-y-8">
+                <div>
+                  <h2 className="text-3xl font-heading font-extrabold text-slate-900 tracking-tight mb-2">Final Review</h2>
+                  <p className="text-slate-500 font-medium">Verify your selection before we lock it in.</p>
+                </div>
+                
+                <div className="bg-slate-50 rounded-[2.5rem] p-8 space-y-6">
+                  <div className="grid grid-cols-2 gap-y-6 gap-x-4">
+                    <div>
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Service Package</span>
+                      <p className="font-bold text-slate-900">{selectedService?.name}</p>
                     </div>
-
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-600">Vehicle:</span>
-                      <span className="font-medium">
-                        {formData.vehicleDetails.year} {formData.vehicleDetails.make} {formData.vehicleDetails.model}
-                      </span>
+                    <div>
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Vehicle Details</span>
+                      <p className="font-bold text-slate-900">{formData.vehicleDetails.year} {formData.vehicleDetails.make} {formData.vehicleDetails.model}</p>
                     </div>
-
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-600">License Plate:</span>
-                      <span className="font-medium">{formData.vehicleDetails.licensePlate}</span>
+                    <div>
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Appointment</span>
+                      <p className="font-bold text-slate-900">{format(new Date(formData.appointmentDate), 'MMM dd, yyyy')} @ {formData.appointmentTime}</p>
                     </div>
-
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-600">Date:</span>
-                      <span className="font-medium">
-                        {formData.appointmentDate && format(new Date(formData.appointmentDate), 'MMMM dd, yyyy')}
-                      </span>
+                    <div>
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Vehicle Plate</span>
+                      <p className="font-bold text-slate-900 uppercase">{formData.vehicleDetails.licensePlate}</p>
                     </div>
+                  </div>
 
+                  <div className="pt-6 border-t border-slate-200">
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-600">Time:</span>
-                      <span className="font-medium">{formData.appointmentTime}</span>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-600">Duration:</span>
-                      <span className="font-medium">{selectedService?.duration} minutes</span>
-                    </div>
-
-                    <div className="border-t pt-4">
-                      <div className="flex items-center justify-between text-lg font-semibold">
-                        <span>Total Amount:</span>
-                        <span className="text-blue-600">${selectedService?.price}</span>
-                      </div>
+                       <div>
+                         <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Total Estimated</p>
+                         <p className="text-3xl font-black text-brand-600 tracking-tight">₹{selectedService?.price}</p>
+                       </div>
+                       <div className="text-right">
+                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Duration</p>
+                         <p className="font-bold text-slate-900">{selectedService?.duration} MINS</p>
+                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-                  <div className="flex items-start space-x-2">
-                    <AlertCircle className="h-5 w-5 text-yellow-600 mt-0.5" />
-                    <div>
-                      <p className="text-sm text-yellow-800">
-                        <strong>Please note:</strong> Your booking is subject to availability confirmation.
-                        We'll contact you within 24 hours to confirm your appointment.
-                      </p>
-                    </div>
-                  </div>
+                <div className="bg-brand-50 border border-brand-100 rounded-2xl p-5 flex gap-4">
+                   <Info className="w-5 h-5 text-brand-600 flex-shrink-0 mt-0.5" />
+                   <p className="text-xs font-medium text-brand-800 leading-relaxed">
+                     Your booking will be processed immediately. You can reschedule up to 24 hours before your slot via the dashboard.
+                   </p>
                 </div>
               </div>
             )}
 
-            {/* Navigation Buttons */}
-            <div className="flex justify-between mt-8">
+            {/* Form Actions */}
+            <div className="flex items-center justify-between pt-12 mt-12 border-t border-slate-50">
               <button
                 type="button"
                 onClick={prevStep}
                 disabled={currentStep === 1}
-                className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="px-8 py-4 text-slate-400 hover:text-slate-900 font-bold disabled:opacity-0 transition-all active:scale-95 flex items-center gap-2"
               >
-                Previous
+                <ArrowLeft className="w-4 h-4" /> Go Back
               </button>
 
               {currentStep < 4 ? (
@@ -440,25 +486,25 @@ const BookService = () => {
                     (currentStep === 2 && (!formData.vehicleDetails.make || !formData.vehicleDetails.model || !formData.vehicleDetails.licensePlate)) ||
                     (currentStep === 3 && (!formData.appointmentDate || !formData.appointmentTime))
                   }
-                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-10 py-4 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl font-bold shadow-xl shadow-brand-600/20 disabled:bg-slate-100 disabled:text-slate-300 disabled:shadow-none transition-all active:scale-95 flex items-center gap-2"
                 >
-                  Next
+                  Continue <ChevronRight className="w-4 h-4 pt-0.5" />
                 </button>
               ) : (
                 <button
                   type="submit"
                   disabled={loading}
-                  className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"
+                  className="px-12 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black shadow-xl shadow-indigo-600/20 disabled:opacity-50 transition-all active:scale-95 flex items-center gap-3"
                 >
                   {loading ? (
                     <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                      <span>Booking...</span>
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/30 border-t-white"></div>
+                      <span>SECURE BOOKING...</span>
                     </>
                   ) : (
                     <>
-                      <CheckCircle className="h-4 w-4" />
-                      <span>Confirm Booking</span>
+                      <ShieldCheck className="h-5 w-5" />
+                      <span>CONFIRM & SCHEDULE</span>
                     </>
                   )}
                 </button>

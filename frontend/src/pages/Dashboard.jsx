@@ -1,6 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, Plus, Clock, CheckCircle, XCircle, Car, AlertCircle, Download } from 'lucide-react';
+import { 
+  Calendar, 
+  Plus, 
+  Clock, 
+  CheckCircle, 
+  XCircle, 
+  Car, 
+  AlertCircle, 
+  Download, 
+  Eye, 
+  History,
+  TrendingUp,
+  MapPin,
+  ArrowRight
+} from 'lucide-react';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 import { format } from 'date-fns';
@@ -38,7 +52,6 @@ const Dashboard = () => {
       setStats({ total, pending, approved, completed });
     } catch (err) {
       console.error(err);
-      alert('❌ Failed to fetch bookings');
     }
   };
 
@@ -51,8 +64,6 @@ const Dashboard = () => {
       }, {
         headers: { Authorization: `Bearer ${token}` },
       });
-
-      alert('❌ Booking cancelled successfully!');
       fetchBookings();
     } catch (err) {
       console.error(err);
@@ -66,7 +77,6 @@ const Dashboard = () => {
         headers: { Authorization: `Bearer ${token}` },
         responseType: 'blob',
       });
-
       const blob = new Blob([response.data], { type: 'application/pdf' });
       const url = window.URL.createObjectURL(blob);
       window.open(url);
@@ -82,7 +92,6 @@ const Dashboard = () => {
         headers: { Authorization: `Bearer ${token}` },
         responseType: 'blob',
       });
-
       const blob = new Blob([response.data], { type: 'application/pdf' });
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
@@ -94,171 +103,173 @@ const Dashboard = () => {
     }
   };
 
-  const getStatusColor = (status) => {
+  const getStatusStyle = (status) => {
     switch (status) {
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'approved': return 'bg-blue-100 text-blue-800';
-      case 'in-progress': return 'bg-purple-100 text-purple-800';
-      case 'completed': return 'bg-green-100 text-green-800';
-      case 'cancelled': return 'bg-red-100 text-red-800';
-      case 'rejected': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'pending': return 'bg-amber-50 text-amber-600 border-amber-100';
+      case 'approved': return 'bg-indigo-50 text-indigo-600 border-indigo-100';
+      case 'in-progress': return 'bg-purple-50 text-purple-600 border-purple-100';
+      case 'completed': return 'bg-emerald-50 text-emerald-600 border-emerald-100';
+      case 'cancelled': 
+      case 'rejected': return 'bg-rose-50 text-rose-600 border-rose-100';
+      default: return 'bg-slate-50 text-slate-600 border-slate-100';
     }
   };
 
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case 'pending': return <Clock className="h-4 w-4" />;
-      case 'approved': return <CheckCircle className="h-4 w-4" />;
-      case 'completed': return <CheckCircle className="h-4 w-4" />;
-      case 'cancelled': return <XCircle className="h-4 w-4" />;
-      case 'rejected': return <XCircle className="h-4 w-4" />;
-      default: return <AlertCircle className="h-4 w-4" />;
-    }
-  };
-
-  if (!user) {
-    return <p className="text-center mt-10 text-red-600">Please login to view your dashboard.</p>;
-  }
+  if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Welcome back, {user?.name || 'User'}!</h1>
-          <p className="text-gray-600 mt-2">Manage your vehicle service bookings</p>
+    <div className="min-h-screen bg-slate-50/50 py-12 animate-fade-in">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+          <div>
+            <h1 className="text-4xl font-heading font-extrabold text-slate-900 tracking-tight">
+              Hello, <span className="text-brand-600">{user.name.split(' ')[0]}</span>!
+            </h1>
+            <p className="text-slate-500 mt-2 font-medium flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 text-emerald-500" />
+              Your vehicle maintenance is on track.
+            </p>
+          </div>
+          
+          <Link
+            to="/book-service"
+            className="group inline-flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-8 py-4 rounded-2xl font-bold shadow-xl shadow-brand-600/20 transition-all hover:-translate-y-1 active:scale-95"
+          >
+            <Plus className="w-5 h-5" />
+            <span>Book New Service</span>
+            <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+          </Link>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {[
-            { label: 'Total Bookings', icon: <Calendar className="h-6 w-6 text-blue-600" />, value: stats.total },
-            { label: 'Pending', icon: <Clock className="h-6 w-6 text-yellow-600" />, value: stats.pending },
-            { label: 'Approved', icon: <CheckCircle className="h-6 w-6 text-blue-600" />, value: stats.approved },
-            { label: 'Completed', icon: <CheckCircle className="h-6 w-6 text-green-600" />, value: stats.completed },
+            { label: 'Total Services', icon: <History />, value: stats.total, color: 'brand' },
+            { label: 'Upcoming', icon: <Calendar />, value: stats.approved + stats.pending, color: 'indigo' },
+            { label: 'In Workshop', icon: <Clock />, value: stats.approved, color: 'amber' },
+            { label: 'Completed', icon: <CheckCircle />, value: stats.completed, color: 'emerald' },
           ].map((stat, i) => (
-            <div key={i} className="bg-white rounded-xl shadow-sm p-6">
-              <div className="flex items-center">
-                <div className="bg-gray-100 p-3 rounded-lg">{stat.icon}</div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">{stat.label}</p>
-                  <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+            <div key={i} className="bg-white rounded-3xl p-6 border border-slate-100 card-shadow hover:card-shadow-hover transition-all duration-300">
+              <div className="flex items-center gap-4">
+                <div className={`p-3 rounded-2xl bg-${stat.color}-50 text-${stat.color}-600`}>
+                  {React.cloneElement(stat.icon, { className: 'w-6 h-6' })}
+                </div>
+                <div>
+                  <p className="text-slate-500 text-xs font-bold uppercase tracking-wider">{stat.label}</p>
+                  <p className="text-2xl font-heading font-extrabold text-slate-900">{stat.value}</p>
                 </div>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Action Button */}
-        <div className="mb-8">
-          <Link
-            to="/book-service"
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium inline-flex items-center space-x-2 transition-colors"
-          >
-            <Plus className="h-5 w-5" />
-            <span>Book New Service</span>
-          </Link>
-        </div>
-
-        {/* Bookings Table */}
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-900">Your Bookings</h2>
+        {/* Main Content Card */}
+        <div className="bg-white rounded-[2.5rem] border border-slate-100 card-shadow overflow-hidden">
+          <div className="px-8 py-8 border-b border-slate-50 flex items-center justify-between">
+            <h2 className="text-2xl font-heading font-bold text-slate-900">Your Bookings</h2>
+            <div className="flex items-center gap-2 text-sm font-bold text-slate-400 bg-slate-50 px-4 py-2 rounded-xl">
+              <Filter className="w-4 h-4" />
+              <span>Recent first</span>
+            </div>
           </div>
 
           {bookings.length === 0 ? (
-            <div className="text-center py-12">
-              <Car className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No bookings yet</h3>
-              <p className="text-gray-600 mb-4">Get started by booking your first service</p>
+            <div className="text-center py-24 flex flex-col items-center">
+              <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-6">
+                <Car className="h-10 w-10 text-slate-300" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">No active bookings</h3>
+              <p className="text-slate-500 mb-8 max-w-xs mx-auto font-medium">Your garage is quiet. Schedule a service to keep your vehicle in top shape.</p>
               <Link
                 to="/book-service"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+                className="bg-slate-900 hover:bg-slate-800 text-white px-8 py-3.5 rounded-xl font-bold transition-all shadow-lg active:scale-95"
               >
-                Book Service
+                Schedule First Service
               </Link>
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="w-full text-left">
+                <thead className="bg-slate-50/50 text-slate-500 text-xs font-bold uppercase tracking-widest">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Service & Vehicle
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Date & Time
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Amount
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Actions
-                    </th>
+                    <th className="px-8 py-5">Service & Vehicle</th>
+                    <th className="px-8 py-5">Schedule</th>
+                    <th className="px-8 py-5">Status</th>
+                    <th className="px-8 py-5">Cost</th>
+                    <th className="px-8 py-5 text-right">Options</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="divide-y divide-slate-50 font-medium">
                   {bookings.map((booking) => (
-                    <tr key={booking?._id || Math.random()} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">
-                          {booking?.service?.name || 'Unknown Service'}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {booking?.vehicleDetails?.year || ''} {booking?.vehicleDetails?.make || ''} {booking?.vehicleDetails?.model || ''}
-                        </div>
-                        <div className="text-xs text-gray-400">
-                          {booking?.vehicleDetails?.licensePlate || ''}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {booking?.appointmentDate ? format(new Date(booking.appointmentDate), 'MMM dd, yyyy') : '—'}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {booking?.appointmentTime || '—'}
+                    <tr key={booking?._id || Math.random()} className="hover:bg-slate-50/50 transition-colors group">
+                      <td className="px-8 py-6">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-2xl bg-brand-50 flex items-center justify-center text-brand-600 group-hover:bg-brand-600 group-hover:text-white transition-all">
+                            <Car className="w-6 h-6" />
+                          </div>
+                          <div>
+                            <div className="text-slate-900 font-bold">{booking?.service?.name || 'Service'}</div>
+                            <div className="text-xs text-slate-500 font-bold mt-0.5">
+                              {booking?.vehicleDetails?.make} {booking?.vehicleDetails?.model} • {booking?.vehicleDetails?.licensePlate}
+                            </div>
+                          </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(booking?.status)}`}>
-                          {getStatusIcon(booking?.status)}
-                          <span className="capitalize">{booking?.status || 'unknown'}</span>
+                      <td className="px-8 py-6">
+                        <div className="flex flex-col">
+                          <span className="text-slate-900 font-bold">{booking?.appointmentDate ? format(new Date(booking.appointmentDate), 'MMM dd, yyyy') : '—'}</span>
+                          <span className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
+                            <Clock className="w-3 h-3" /> {booking?.appointmentTime || '—'}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-8 py-6">
+                        <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm ${getStatusStyle(booking?.status)}`}>
+                          <span className={`w-1.5 h-1.5 rounded-full bg-current`}></span>
+                          {booking?.status || 'unknown'}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        ₹{booking?.totalAmount || 0}
+                      <td className="px-8 py-6">
+                        <span className="text-slate-900 font-black text-lg">₹{booking?.totalAmount || 0}</span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-4">
-                        {booking?.status === 'pending' && (
-                          <button
-                            onClick={() => handleCancelBooking(booking._id)}
-                            className="text-red-600 hover:underline"
+                      <td className="px-8 py-6 text-right">
+                        <div className="flex justify-end items-center gap-3">
+                          {booking?.status === 'pending' && (
+                            <button
+                              onClick={() => handleCancelBooking(booking._id)}
+                              className="text-rose-500 hover:text-rose-600 bg-rose-50 hover:bg-rose-100 p-2.5 rounded-xl transition-all"
+                              title="Cancel"
+                            >
+                              <XCircle className="w-5 h-5" />
+                            </button>
+                          )}
+                          {booking?.status === 'completed' && (
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => handleViewReceipt(booking._id)}
+                                className="text-brand-600 hover:text-white hover:bg-brand-600 bg-brand-50 p-2.5 rounded-xl transition-all"
+                                title="View Receipt"
+                              >
+                                <Eye className="w-5 h-5" />
+                              </button>
+                              <button
+                                onClick={() => handleDownloadReceipt(booking._id)}
+                                className="text-emerald-600 hover:text-white hover:bg-emerald-600 bg-emerald-50 p-2.5 rounded-xl transition-all"
+                                title="Download"
+                              >
+                                <Download className="w-5 h-5" />
+                              </button>
+                            </div>
+                          )}
+                          <Link 
+                            to={`/booking-details/${booking._id}`}
+                            className="bg-slate-100 hover:bg-slate-200 text-slate-600 p-2.5 rounded-xl transition-all"
                           >
-                            Cancel
-                          </button>
-                        )}
-                        {booking?.status === 'approved' && (
-                          <span className="text-green-600">Confirmed</span>
-                        )}
-                        {booking?.status === 'completed' && (
-                          <div className="flex space-x-2">
-                            <button
-                              onClick={() => handleViewReceipt(booking._id)}
-                              className="text-blue-600 hover:underline"
-                            >
-                              View
-                            </button>
-                            <button
-                              onClick={() => handleDownloadReceipt(booking._id)}
-                              className="text-green-600 hover:underline"
-                            >
-                              Download
-                            </button>
-                          </div>
-                        )}
+                            <Plus className="w-5 h-5" />
+                          </Link>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -271,5 +282,10 @@ const Dashboard = () => {
     </div>
   );
 };
+
+// Simple Filter Icon for UI
+const Filter = ({ className }) => (
+  <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" /></svg>
+);
 
 export default Dashboard;

@@ -1,34 +1,27 @@
-import React from 'react';
-import { Mail, Phone, MapPin } from 'lucide-react';
+import React, { useState } from 'react';
+import { 
+  Mail, 
+  Phone, 
+  MapPin, 
+  Send, 
+  MessageSquare, 
+  Clock, 
+  Globe,
+  CheckCircle2,
+  AlertCircle
+} from 'lucide-react';
 
 const Contact = () => {
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-20 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-5xl mx-auto">
-        <h1 className="text-5xl font-extrabold text-center text-blue-800 mb-6 drop-shadow-md">
-          Contact Us
-        </h1>
-        <p className="text-center text-lg text-gray-600 mb-14 max-w-2xl mx-auto">
-          Have questions or need help? Reach out to us and we’ll get back to you shortly.
-        </p>
+  const [form, setForm] = useState({ name: '', email: '', message: '' });
+  const [sent, setSent] = useState(false);
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          <div className="space-y-8">
-            <div className="flex items-start space-x-4">
-              <MapPin className="text-blue-600 w-6 h-6 mt-1" />
-              <div>
-                <p className="text-lg font-semibold text-gray-800">Our Address</p>
-                <p className="text-gray-600">123 AutoCare Street, New Town, Cityville, 456789</p>
-              </div>
-            </div>
-            <div className="flex items-start space-x-4">
-              <Phone className="text-blue-600 w-6 h-6 mt-1" />
-              <div>
-                <p className="text-lg font-semibold text-gray-800">Phone</p>
-                <p className="text-gray-600">+91 98765 43210</p>
-              </div>
-            </div>
-            <div className="flex items-start space-x-4">
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setSent(true);
+    setTimeout(() => setSent(false), 5000);
+  };
+
+  return (
               <Mail className="text-blue-600 w-6 h-6 mt-1" />
               <div>
                 <p className="text-lg font-semibold text-gray-800">Email</p>
