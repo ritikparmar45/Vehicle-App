@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Navbar from './components/Layout/Navbar';
 import Footer from './components/Layout/Footer';
@@ -19,12 +19,12 @@ const ProtectedRoute = ({ children }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
+      <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center p-4">
         <div className="relative">
-          <div className="w-16 h-16 border-4 border-brand-100 rounded-full"></div>
-          <div className="w-16 h-16 border-4 border-brand-600 border-t-transparent rounded-full animate-spin absolute top-0 left-0"></div>
+          <div className="w-16 h-16 border-4 border-slate-800 rounded-full"></div>
+          <div className="w-16 h-16 border-4 border-accent-primary border-t-transparent rounded-full animate-spin absolute top-0 left-0"></div>
         </div>
-        <p className="mt-6 text-xs font-black text-slate-400 uppercase tracking-[0.2em] animate-pulse">Authenticating...</p>
+        <p className="mt-6 text-xs font-black text-slate-500 uppercase tracking-[0.2em] animate-pulse">Authenticating...</p>
       </div>
     );
   }
@@ -37,12 +37,12 @@ const PublicRoute = ({ children }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
+      <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center p-4">
         <div className="relative">
-          <div className="w-16 h-16 border-4 border-brand-100 rounded-full"></div>
-          <div className="w-16 h-16 border-4 border-brand-600 border-t-transparent rounded-full animate-spin absolute top-0 left-0"></div>
+          <div className="w-16 h-16 border-4 border-slate-800 rounded-full"></div>
+          <div className="w-16 h-16 border-4 border-accent-primary border-t-transparent rounded-full animate-spin absolute top-0 left-0"></div>
         </div>
-        <p className="mt-6 text-xs font-black text-slate-400 uppercase tracking-[0.2em] animate-pulse">Syncing Garage...</p>
+        <p className="mt-6 text-xs font-black text-slate-500 uppercase tracking-[0.2em] animate-pulse">Syncing Garage...</p>
       </div>
     );
   }
@@ -50,11 +50,20 @@ const PublicRoute = ({ children }) => {
   return user ? <Navigate to="/dashboard" /> : <>{children}</>;
 };
 
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [pathname]);
+  return null;
+};
+
 function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="min-h-screen bg-slate-50/50 flex flex-col selection:bg-brand-600 selection:text-white">
+        <ScrollToTop />
+        <div className="min-h-screen bg-[#050505] flex flex-col selection:bg-accent-primary/20 selection:text-accent-primary">
           <Navbar />
           <main className="flex-grow pt-20">
             <Routes>

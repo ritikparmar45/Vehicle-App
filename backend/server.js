@@ -8,7 +8,11 @@ import bookingRoutes from './routes/bookings.js';
 import userRoutes from './routes/users.js';
 import adminRoutes from './routes/admin.js';
 import editProfileRoute from './routes/editprofile.js';
-import receiptRoutes from './routes/receipts.js'; 
+import receiptRoutes from './routes/receipts.js';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import rateLimit from 'express-rate-limit';
+import errorHandler from './middleware/errorHandler.js';
 import "./jobs/bookingReminder.js";
 
 
@@ -18,13 +22,30 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
+// Security & Logging Middleware
+app.use(helmet()); // Set security headers
+app.use(morgan('dev')); // Log requests
+
+// Rate Limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per window
+  message: {
+    success: false,
+    message: 'Too many requests from this IP, please try again after 15 minutes.'
+  }
+});
+app.use('/api/', limiter);
+
+// CORS
 app.use(cors({
-  origin: ['https://vehicle-app-seven.vercel.app', 'http://localhost:5173'], // only this origin can access the API
-  methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'],
+  origin: ['https://vehicle-app-seven.vercel.app', 'http://localhost:5173'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
-app.use(express.json()); //it converts incoming requests with JSON payloads into JavaScript objects
+
+app.use(express.json());
 
 // Connect to MongoDB Atlas
 const connectDB = async () => {
@@ -55,8 +76,11 @@ app.use('/api/receipts', receiptRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ message: 'Vehicle Service Booking API is running!' });
+  res.json({ success: true, message: 'Vehicle Service Booking API is running!' });
 });
+
+// Error Handling Middleware (MUST BE LAST)
+app.use(errorHandler);
 
 // Start the server
 app.listen(PORT, () => {

@@ -67,7 +67,7 @@ const services = [
 
 const Services = () => {
   return (
-    <div className="min-h-screen bg-slate-50/50 py-24 animate-fade-in">
+    <div className="min-h-screen bg-[#050505] py-24 animate-fade-in">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header Section */}
@@ -76,10 +76,10 @@ const Services = () => {
             <Sparkles className="w-3 h-3" />
             Premium Catalog
           </span>
-          <h1 className="text-5xl font-heading font-extrabold text-slate-900 tracking-tight mb-8">
-            Expert <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-indigo-600">Solutions</span> for Your Machine
+          <h1 className="text-5xl font-heading font-extrabold text-white tracking-tight mb-8">
+            Expert <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-primary to-accent-secondary">Solutions</span> for Your Machine
           </h1>
-          <p className="text-xl text-slate-500 font-medium leading-relaxed">
+          <p className="text-xl text-slate-400 font-medium leading-relaxed">
             From routine checks to complex restorations, our certified experts 
             ensure your vehicle stays in peak performance.
           </p>
@@ -89,7 +89,7 @@ const Services = () => {
           {services.map((service, index) => (
             <div
               key={index}
-              className="bg-white rounded-[2.5rem] p-8 border border-slate-100 card-shadow hover:card-shadow-hover transition-all duration-300 group relative overflow-hidden"
+              className="bg-slate-900/50 rounded-[2.5rem] p-8 border border-slate-800 card-shadow hover:card-shadow-hover transition-all duration-300 group relative overflow-hidden"
             >
               <div className="relative z-10">
                 <div className="flex justify-between items-start mb-8">
@@ -101,13 +101,13 @@ const Services = () => {
                   </span>
                 </div>
                 
-                <h3 className="text-2xl font-bold text-slate-900 mb-2 group-hover:text-brand-600 transition-colors uppercase tracking-tight">{service.name}</h3>
-                <p className="text-slate-500 text-sm font-medium leading-relaxed mb-8">{service.desc}</p>
+                <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-accent-primary transition-colors uppercase tracking-tight">{service.name}</h3>
+                <p className="text-slate-400 text-sm font-medium leading-relaxed mb-8">{service.desc}</p>
                 
                 <div className="flex items-end justify-between">
                    <div>
-                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Starting From</p>
-                     <p className="text-3xl font-black text-slate-900 group-hover:text-brand-600 transition-colors">{service.price}</p>
+                     <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Starting From</p>
+                     <p className="text-3xl font-black text-white group-hover:text-accent-primary transition-colors">{service.price}</p>
                    </div>
                    <div className="flex items-center gap-2 text-emerald-500">
                      <CheckCircle2 className="w-5 h-5" />
@@ -136,7 +136,7 @@ const Services = () => {
                  <p className="text-slate-400 font-medium">We offer custom modifications and specialized restoration services for vintage and performance vehicles.</p>
               </div>
               <div className="flex gap-4">
-                 <button className="bg-brand-600 hover:bg-brand-700 text-white px-8 py-4 rounded-2xl font-bold transition-all hover:-translate-y-1 active:scale-95 shadow-xl shadow-brand-600/20">
+                 <button className="bg-accent-primary hover:bg-accent-primary/80 text-white px-8 py-4 rounded-2xl font-bold transition-all hover:-translate-y-1 active:scale-95 shadow-xl shadow-accent-primary/20">
                    Contact Specialist
                  </button>
                  <button className="bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-2xl font-bold transition-all border border-white/10">

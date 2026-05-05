@@ -3,71 +3,131 @@ import User from '../models/User.js';
 import Booking from '../models/Booking.js';
 import Service from '../models/Service.js';
 import { authenticateToken, authorizeRoles } from '../middleware/auth.js';
+import ErrorResponse from '../utils/errorResponse.js';
 
 const router = express.Router();
 
-// 1. Admin Dashboard Stats
-router.get('/stats', authenticateToken, authorizeRoles('admin'), async (req, res) => {
+/**
+ * @desc    Get admin dashboard statistics
+ * @route   GET /api/admin/stats
+ * @access  Private (Admin)
+ */
+router.get('/stats', authenticateToken, authorizeRoles('admin'), async (req, res, next) => {
   try {
-    const users = await User.countDocuments();
-    const bookings = await Booking.countDocuments();
-    const services = await Service.countDocuments();
+    const usersCount = await User.countDocuments();
+    const bookingsCount = await Booking.countDocuments();
+    const servicesCount = await Service.countDocuments();
     
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const bookingsToday = await Booking.countDocuments({ createdAt: { $gte: today } });
 
-    res.json({ users, bookings, services, bookingsToday });
+    res.status(200).json({
+      success: true,
+      data: {
+        users: usersCount,
+        bookings: bookingsCount,
+        services: servicesCount,
+        bookingsToday
+      }
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    next(error);
   }
 });
 
-// 2. Get All Users
-router.get('/users', authenticateToken, authorizeRoles('admin'), async (req, res) => {
+/**
+ * @desc    Get all registered users
+ * @route   GET /api/admin/users
+ * @access  Private (Admin)
+ */
+router.get('/users', authenticateToken, authorizeRoles('admin'), async (req, res, next) => {
   try {
     const users = await User.find().select('-password');
-    res.json({ users });
+    res.status(200).json({
+      success: true,
+      count: users.length,
+      users
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    next(error);
   }
 });
 
-// 3. Block User
-router.patch('/users/:id/block', authenticateToken, authorizeRoles('admin'), async (req, res) => {
+/**
+ * @desc    Block/Deactivate user account
+ * @route   PATCH /api/admin/users/:id/block
+ * @access  Private (Admin)
+ */
+router.patch('/users/:id/block', authenticateToken, authorizeRoles('admin'), async (req, res, next) => {
   try {
     const user = await User.findByIdAndUpdate(req.params.id, { isActive: false }, { new: true });
-    if (!user) return res.status(404).json({ message: 'User not found' });
-    res.json({ message: 'User blocked', user });
+    
+    if (!user) {
+      return next(new ErrorResponse('Target user identity not found', 404));
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Account deactivation protocol successful',
+      user
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    next(error);
   }
 });
 
-// 4. Unblock User
-router.patch('/users/:id/unblock', authenticateToken, authorizeRoles('admin'), async (req, res) => {
+/**
+ * @desc    Unblock/Activate user account
+ * @route   PATCH /api/admin/users/:id/unblock
+ * @access  Private (Admin)
+ */
+router.patch('/users/:id/unblock', authenticateToken, authorizeRoles('admin'), async (req, res, next) => {
   try {
     const user = await User.findByIdAndUpdate(req.params.id, { isActive: true }, { new: true });
-    if (!user) return res.status(404).json({ message: 'User not found' });
-    res.json({ message: 'User unblocked', user });
+    
+    if (!user) {
+      return next(new ErrorResponse('Target user identity not found', 404));
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Account activation sequence complete',
+      user
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    next(error);
   }
 });
 
-// 5. Delete User
-router.delete('/users/:id', authenticateToken, authorizeRoles('admin'), async (req, res) => {
+/**
+ * @desc    Delete user account
+ * @route   DELETE /api/admin/users/:id
+ * @access  Private (Admin)
+ */
+router.delete('/users/:id', authenticateToken, authorizeRoles('admin'), async (req, res, next) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id);
-    if (!user) return res.status(404).json({ message: 'User not found' });
-    res.json({ message: 'User deleted' });
+    
+    if (!user) {
+      return next(new ErrorResponse('Target user identity not found for deletion', 404));
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'User identity purged from system'
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    next(error);
   }
 });
 
-// 6. Get All Bookings (Admin)
-router.get('/bookings', authenticateToken, authorizeRoles('admin'), async (req, res) => {
+/**
+ * @desc    Get all bookings with full population
+ * @route   GET /api/admin/bookings
+ * @access  Private (Admin)
+ */
+router.get('/bookings', authenticateToken, authorizeRoles('admin'), async (req, res, next) => {
   try {
     const bookings = await Booking.find()
       .populate('user', 'name email phone')
@@ -75,36 +135,50 @@ router.get('/bookings', authenticateToken, authorizeRoles('admin'), async (req, 
       .populate('mechanic', 'name email phone')
       .sort({ createdAt: -1 });
 
-    res.json({ bookings });
-  } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+    res.status(200).json({
+      success: true,
+      count: bookings.length,
+      bookings
+    });
+  } catch (error) {
+    next(error);
   }
 });
 
-// 7. Update Booking Status
-router.patch('/bookings/:id/status', authenticateToken, authorizeRoles('admin'), async (req, res) => {
-  const { status } = req.body;
-  const allowed = ['pending', 'approved', 'in-progress', 'completed', 'cancelled', 'rejected'];
-
-  if (!allowed.includes(status.toLowerCase())) {
-    return res.status(400).json({ message: 'Invalid status value' });
-  }
-
+/**
+ * @desc    Update booking status (Admin override)
+ * @route   PATCH /api/admin/bookings/:id/status
+ * @access  Private (Admin)
+ */
+router.patch('/bookings/:id/status', authenticateToken, authorizeRoles('admin'), async (req, res, next) => {
   try {
+    const { status } = req.body;
+    const allowed = ['pending', 'approved', 'in-progress', 'completed', 'cancelled', 'rejected'];
+
+    if (!status || !allowed.includes(status.toLowerCase())) {
+      return next(new ErrorResponse('Invalid operational status provided', 400));
+    }
+
     const booking = await Booking.findByIdAndUpdate(
       req.params.id,
       { status: status.toLowerCase() },
-      { new: true }
+      { new: true, runValidators: true }
     )
     .populate('user', 'name email phone')
     .populate('service', 'name category price')
     .populate('mechanic', 'name email phone');
 
-    if (!booking) return res.status(404).json({ message: 'Booking not found' });
+    if (!booking) {
+      return next(new ErrorResponse('Booking record not found for synchronization', 404));
+    }
 
-    res.json({ message: `Booking marked as ${status}`, booking });
-  } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+    res.status(200).json({
+      success: true,
+      message: `System Matrix Updated: Booking marked as ${status}`,
+      booking
+    });
+  } catch (error) {
+    next(error);
   }
 });
 

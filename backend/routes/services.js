@@ -1,105 +1,149 @@
 import express from 'express';
-import { body, validationResult } from 'express-validator';
+import { body } from 'express-validator';
 import Service from '../models/Service.js';
 import { authenticateToken, authorizeRoles } from '../middleware/auth.js';
+import { validate } from '../middleware/validate.js';
+import ErrorResponse from '../utils/errorResponse.js';
 
 const router = express.Router();
 
-// Get all services
-router.get('/', async (req, res) => {
+/**
+ * @desc    Get all active services
+ * @route   GET /api/services
+ * @access  Public
+ */
+router.get('/', async (req, res, next) => {
   try {
     const { category, vehicleType } = req.query;
-    const filter = { isActive: true }; //only fetch the active services
+    const filter = { isActive: true };
     
     if (category) filter.category = category;
     if (vehicleType && vehicleType !== 'both') filter.vehicleType = { $in: [vehicleType, 'both'] };
 
-    const services = await Service.find(filter).sort({ createdAt: -1 }); // sort result by newest first
-    res.json({ services }); //we send this to frontend
+    const services = await Service.find(filter).sort({ createdAt: -1 });
+    
+    res.status(200).json({
+      success: true,
+      count: services.length,
+      services
+    });
   } catch (error) {
-    console.error('Get services error:', error);
-    res.status(500).json({ message: 'Server error' });
+    next(error);
   }
 });
 
-// Get service by ID
-router.get('/:id', async (req, res) => {
+/**
+ * @desc    Get service by ID
+ * @route   GET /api/services/:id
+ * @access  Public
+ */
+router.get('/:id', async (req, res, next) => {
   try {
     const service = await Service.findById(req.params.id);
   
     if (!service) {
-      return res.status(404).json({ message: 'Service not found' });
+      return next(new ErrorResponse('Specified service catalog entry not found', 404));
     }
-    res.json({ service });
-  } catch (error) {
-    console.error('Get service error:', error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// Create service (Admin only)
-router.post('/', authenticateToken, authorizeRoles('admin'), [
-  body('name').trim().isLength({ min: 2 }).withMessage('Service name is required'),
-  body('price').isNumeric().withMessage('Price must be a number'),
-  body('duration').isNumeric().withMessage('Duration must be a number'),
-], async (req, res) => {
-  try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
-    const service = new Service(req.body);
-    await service.save();
-
-    res.status(201).json({
-      message: 'Service created successfully',
+    
+    res.status(200).json({
+      success: true,
       service
     });
   } catch (error) {
-    console.error('Create service error:', error);
-    res.status(500).json({ message: 'Server error' });
+    next(error);
   }
 });
 
-// Update service (Admin only)
-router.put('/:id', authenticateToken, authorizeRoles('admin'), async (req, res) => {
-  try {
-    const service = await Service.findByIdAndUpdate(
-      req.params.id, //which service to update
-      req.body,//which data to update
-      { new: true,// return the updated document
-     runValidators: true // validate the updated data
-    }
-    );
+/**
+ * @desc    Create new service
+ * @route   POST /api/services
+ * @access  Private (Admin)
+ */
+router.post(
+  '/', 
+  authenticateToken, 
+  authorizeRoles('admin'), 
+  [
+    body('name').trim().isLength({ min: 2 }).withMessage('Valid protocol name is required'),
+    body('price').isNumeric().withMessage('Payload cost must be a numerical value'),
+    body('duration').isNumeric().withMessage('Operational duration must be a numerical value'),
+    validate
+  ], 
+  async (req, res, next) => {
+    try {
+      const service = await Service.create(req.body);
 
-    if (!service) {
-      return res.status(404).json({ message: 'Service not found' });
+      res.status(201).json({
+        success: true,
+        message: 'New service protocol established successfully',
+        service
+      });
+    } catch (error) {
+      next(error);
     }
-
-    res.json({
-      message: 'Service updated successfully',
-      service //for frontend to get the updated service data
-    });
-  } catch (error) {
-    console.error('Update service error:', error);
-    res.status(500).json({ message: 'Server error' });
   }
-});
+);
 
-// Delete service (Admin only)
-router.delete('/:id', authenticateToken, authorizeRoles('admin'), async (req, res) => {
-  try {
-    const service = await Service.findByIdAndDelete(req.params.id);
-    if (!service) {
-      return res.status(404).json({ message: 'Service not found' });
+/**
+ * @desc    Update existing service
+ * @route   PUT /api/services/:id
+ * @access  Private (Admin)
+ */
+router.put(
+  '/:id', 
+  authenticateToken, 
+  authorizeRoles('admin'), 
+  async (req, res, next) => {
+    try {
+      const service = await Service.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        { 
+          new: true,
+          runValidators: true 
+        }
+      );
+
+      if (!service) {
+        return next(new ErrorResponse('Target protocol not found for synchronization', 404));
+      }
+
+      res.status(200).json({
+        success: true,
+        message: 'Protocol synchronization complete',
+        service
+      });
+    } catch (error) {
+      next(error);
     }
-
-    res.json({ message: 'Service deleted successfully' });
-  } catch (error) {
-    console.error('Delete service error:', error);
-    res.status(500).json({ message: 'Server error' });
   }
-});
+);
+
+/**
+ * @desc    Delete service protocol
+ * @route   DELETE /api/services/:id
+ * @access  Private (Admin)
+ */
+router.delete(
+  '/:id', 
+  authenticateToken, 
+  authorizeRoles('admin'), 
+  async (req, res, next) => {
+    try {
+      const service = await Service.findByIdAndDelete(req.params.id);
+      
+      if (!service) {
+        return next(new ErrorResponse('Target protocol not found for deletion', 404));
+      }
+
+      res.status(200).json({ 
+        success: true, 
+        message: 'Service protocol purged successfully' 
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 export default router;

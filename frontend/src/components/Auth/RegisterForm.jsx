@@ -58,12 +58,12 @@ const RegisterForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#050505] flex items-center justify-center py-24 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
-        <div className="bg-white rounded-xl shadow-lg p-8">
+        <div className="bg-slate-900/50 rounded-[2.5rem] border border-white/5 p-12 shadow-2xl backdrop-blur-xl">
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">Create Account</h2>
-            <p className="text-gray-600">Join AutoCare today</p>
+            <h2 className="text-4xl font-heading font-black text-white mb-3">Create Account</h2>
+            <p className="text-slate-400 font-medium">Join AutoCare today</p>
           </div>
 
           {error && (
@@ -76,12 +76,12 @@ const RegisterForm = () => {
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-4">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="name" className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
                   Full Name
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User className="h-5 w-5 text-gray-400" />
+                    <User className="h-5 w-5 text-slate-400" />
                   </div>
                   <input
                     id="name"
@@ -90,19 +90,19 @@ const RegisterForm = () => {
                     required
                     value={formData.name}
                     onChange={handleChange}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="input-field pl-14"
                     placeholder="Enter your full name"
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="email" className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
                   Email Address
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Mail className="h-5 w-5 text-gray-400" />
+                    <Mail className="h-5 w-5 text-slate-400" />
                   </div>
                   <input
                     id="email"
@@ -111,19 +111,19 @@ const RegisterForm = () => {
                     required
                     value={formData.email}
                     onChange={handleChange}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="input-field pl-14"
                     placeholder="Enter your email"
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="phone" className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
                   Phone Number
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Phone className="h-5 w-5 text-gray-400" />
+                    <Phone className="h-5 w-5 text-slate-400" />
                   </div>
                   <input
                     id="phone"
@@ -132,19 +132,19 @@ const RegisterForm = () => {
                     required
                     value={formData.phone}
                     onChange={handleChange}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="input-field pl-14"
                     placeholder="Enter your phone number"
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="address" className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
                   Address (Optional)
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <MapPin className="h-5 w-5 text-gray-400" />
+                    <MapPin className="h-5 w-5 text-slate-400" />
                   </div>
                   <input
                     id="address"
@@ -152,14 +152,14 @@ const RegisterForm = () => {
                     type="text"
                     value={formData.address}
                     onChange={handleChange}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="input-field pl-14"
                     placeholder="Enter your address"
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="role" className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
                   Account Type
                 </label>
                 <select
@@ -167,7 +167,7 @@ const RegisterForm = () => {
                   name="role"
                   value={formData.role}
                   onChange={handleChange}
-                  className="block w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="input-field appearance-none"
                 >
                   <option value="user">Customer</option>
                   <option value="mechanic">Mechanic</option>
@@ -175,12 +175,12 @@ const RegisterForm = () => {
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="password" className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
                   Password
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-gray-400" />
+                    <Lock className="h-5 w-5 text-slate-400" />
                   </div>
                   <input
                     id="password"
@@ -189,7 +189,7 @@ const RegisterForm = () => {
                     required
                     value={formData.password}
                     onChange={handleChange}
-                    className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="input-field pl-14 pr-12"
                     placeholder="Create a password"
                   />
                   <button
@@ -198,21 +198,21 @@ const RegisterForm = () => {
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
-                      <EyeOff className="h-5 w-5 text-gray-400" />
+                      <EyeOff className="h-5 w-5 text-slate-400" />
                     ) : (
-                      <Eye className="h-5 w-5 text-gray-400" />
+                      <Eye className="h-5 w-5 text-slate-400" />
                     )}
                   </button>
                 </div>
               </div>
 
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="confirmPassword" className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
                   Confirm Password
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-gray-400" />
+                    <Lock className="h-5 w-5 text-slate-400" />
                   </div>
                   <input
                     id="confirmPassword"
@@ -221,7 +221,7 @@ const RegisterForm = () => {
                     required
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="input-field pl-14 pr-12"
                     placeholder="Confirm your password"
                   />
                   <button
@@ -230,13 +230,14 @@ const RegisterForm = () => {
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   >
                     {showConfirmPassword ? (
-                      <EyeOff className="h-5 w-5 text-gray-400" />
+                      <EyeOff className="h-5 w-5 text-slate-400" />
                     ) : (
-                      <Eye className="h-5 w-5 text-gray-400" />
+                      <Eye className="h-5 w-5 text-slate-400" />
                     )}
                   </button>
                 </div>
               </div>
+
             </div>
 
             <button

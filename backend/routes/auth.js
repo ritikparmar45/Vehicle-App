@@ -1,8 +1,10 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
-import { body, validationResult } from 'express-validator';
+import { body } from 'express-validator';
 import User from '../models/User.js';
 import { authenticateToken } from '../middleware/auth.js';
+import { validate } from '../middleware/validate.js';
+import ErrorResponse from '../utils/errorResponse.js';
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-this-in-production';
@@ -13,20 +15,15 @@ router.post('/register', [
   body('email').isEmail().withMessage('Please provide a valid email'),
   body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
   body('phone').trim().isLength({ min: 10 }).withMessage('Please provide a valid phone number'),
-], async (req, res) => {
-  try
-  {
-    const errors = validationResult(req);//it collects validation errors
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
+  validate
+], async (req, res, next) => {
+  try {
     const { name, email, password, phone, role, address } = req.body;
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: 'User already exists with this email' });
+      return next(new ErrorResponse('User already exists with this email', 400));
     }
 
     // Create new user in the database
@@ -49,6 +46,7 @@ router.post('/register', [
     );
 
     res.status(201).json({
+      success: true,
       message: 'User registered successfully',
       token,
       user: {
@@ -62,8 +60,7 @@ router.post('/register', [
       }
     });
   } catch (error) {
-    console.error('Registration error:', error);
-    res.status(500).json({ message: 'Server error during registration' });
+    next(error);
   }
 });
 
@@ -71,34 +68,30 @@ router.post('/register', [
 router.post('/login', [
   body('email').isEmail().withMessage('Please provide a valid email'),
   body('password').exists().withMessage('Password is required'),
-], async (req, res) => {
+  validate
+], async (req, res, next) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
     const { email, password } = req.body;
 
     // Find user by email
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: 'Invalid credentials' });
+      return next(new ErrorResponse('Invalid credentials', 401));
     }
 
     // Check password
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid credentials' });
+      return next(new ErrorResponse('Invalid credentials', 401));
     }
 
     // Check if user is active
     if (!user.isActive) {
-      return res.status(400).json({ message: 'Account is deactivated' });
+      return next(new ErrorResponse('Account is deactivated', 403));
     }
 
     // ✅ Update lastLogin
-    user.lastLogin = new Date(); //it sets the last login time to the current date
+    user.lastLogin = new Date(); 
     await user.save();
 
     // Generate JWT token
@@ -109,6 +102,7 @@ router.post('/login', [
     );
 
     res.json({
+      success: true,
       message: 'Login successful',
       token,
       user: {
@@ -123,19 +117,20 @@ router.post('/login', [
       }
     });
   } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ message: 'Server error during login' });
+    next(error);
   }
 });
 
 // ---------------------- GET CURRENT USER ----------------------
-router.get('/me', authenticateToken, async (req, res) => {
+router.get('/me', authenticateToken, async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id).select('-password');
-    res.json({ user });
+    if (!user) {
+      return next(new ErrorResponse('User not found', 404));
+    }
+    res.json({ success: true, user });
   } catch (error) {
-    console.error('Get user error:', error);
-    res.status(500).json({ message: 'Server error' });
+    next(error);
   }
 });
 
