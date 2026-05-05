@@ -101,6 +101,14 @@ const Navbar = () => {
                   <span className="text-[10px] font-black uppercase tracking-widest">Dashboard</span>
                 </Link>
 
+                <Link
+                  to="/garage"
+                  className={`flex items-center gap-3 px-6 py-3 rounded-xl transition-all duration-500 group ${isScrolled || !isHome ? 'glass border-white/5 text-white hover:bg-white/10' : 'bg-slate-50 text-slate-900 hover:bg-white shadow-xl'}`}
+                >
+                  <Car className="h-4 w-4 text-accent-primary group-hover:scale-110 transition-transform" />
+                  <span className="text-[10px] font-black uppercase tracking-widest">Garage</span>
+                </Link>
+
                 <div className="relative group">
                   <button className={`flex items-center gap-3 px-2 py-2 rounded-2xl transition-all duration-500 ${isScrolled || !isHome ? 'glass border-white/5' : 'bg-slate-50'}`}>
                     <div className="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center text-accent-primary font-black text-xs shadow-inner">
@@ -115,6 +123,12 @@ const Navbar = () => {
                     </div>
                     <Link to="/profile" className="flex items-center px-6 py-3.5 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:bg-white/5 hover:text-white transition-all">
                       <User className="h-4 w-4 mr-4 text-accent-primary" /> Profile Settings
+                    </Link>
+                    <Link to="/vault" className="flex items-center px-6 py-3.5 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:bg-white/5 hover:text-white transition-all">
+                      <ShieldCheck className="h-4 w-4 mr-4 text-accent-primary" /> Digital Vault
+                    </Link>
+                    <Link to="/garage" className="flex items-center px-6 py-3.5 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:bg-white/5 hover:text-white transition-all">
+                      <Car className="h-4 w-4 mr-4 text-accent-primary" /> My Garage
                     </Link>
                     <div className="px-4 mt-2">
                       <button onClick={handleLogout} className="w-full flex items-center px-4 py-3.5 text-[10px] font-black uppercase tracking-widest text-accent-error bg-accent-error/10 hover:bg-accent-error hover:text-white rounded-2xl transition-all">

@@ -9,6 +9,7 @@ import userRoutes from './routes/users.js';
 import adminRoutes from './routes/admin.js';
 import editProfileRoute from './routes/editprofile.js';
 import receiptRoutes from './routes/receipts.js';
+import vehicleRoutes from './routes/vehicles.js';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
@@ -73,6 +74,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/edit-profile', editProfileRoute);
 app.use('/api/receipts', receiptRoutes);
+app.use('/api/vehicles', vehicleRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

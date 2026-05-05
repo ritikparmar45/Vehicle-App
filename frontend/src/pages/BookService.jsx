@@ -27,6 +27,8 @@ const BookService = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [garageLoading, setGarageLoading] = useState(false);
+  const [userVehicles, setUserVehicles] = useState([]);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
@@ -53,7 +55,24 @@ const BookService = () => {
 
   useEffect(() => {
     fetchServices();
+    fetchGarage();
   }, []);
+
+  const fetchGarage = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    setGarageLoading(true);
+    try {
+      const response = await axios.get(`${API}/vehicles`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setUserVehicles(response.data.vehicles || []);
+    } catch (err) {
+      console.error('Error fetching garage:', err);
+    } finally {
+      setGarageLoading(false);
+    }
+  };
 
   const fetchServices = async () => {
     try {
@@ -309,6 +328,42 @@ const BookService = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                     <div className="sm:col-span-2 space-y-4">
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Asset Classification</label>
+                      {userVehicles.length > 0 && (
+                        <div className="mb-6 space-y-4">
+                           <p className="text-[8px] font-black text-accent-primary uppercase tracking-[0.2em] ml-1">Select from Digital Garage</p>
+                           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                              {userVehicles.map(v => (
+                                <button
+                                  key={v._id}
+                                  type="button"
+                                  onClick={() => setFormData(p => ({
+                                    ...p,
+                                    vehicleDetails: {
+                                      type: v.type,
+                                      make: v.make,
+                                      model: v.model,
+                                      year: v.year,
+                                      licensePlate: v.licensePlate
+                                    }
+                                  }))}
+                                  className={`p-4 rounded-2xl border-2 transition-all text-left space-y-2 ${formData.vehicleDetails.licensePlate === v.licensePlate ? 'border-accent-primary bg-accent-primary/10' : 'border-slate-100 bg-slate-50/50 hover:border-slate-200'}`}
+                                >
+                                   <div className="flex justify-between items-center">
+                                      {v.type === 'car' ? <Car size={14} className="text-accent-primary" /> : <Zap size={14} className="text-accent-primary" />}
+                                      <span className="text-[8px] font-black text-slate-400">{v.year}</span>
+                                   </div>
+                                   <p className="text-[10px] font-black truncate text-slate-900 uppercase">{v.make} {v.model}</p>
+                                   <p className="text-[8px] font-black text-slate-400 tracking-widest">{v.licensePlate}</p>
+                                </button>
+                              ))}
+                           </div>
+                           <div className="flex items-center gap-4 py-4">
+                              <div className="flex-grow h-px bg-slate-100"></div>
+                              <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest">or manual configuration</span>
+                              <div className="flex-grow h-px bg-slate-100"></div>
+                           </div>
+                        </div>
+                      )}
                       <div className="grid grid-cols-2 gap-6">
                          {['car', 'bike'].map(type => (
                            <button

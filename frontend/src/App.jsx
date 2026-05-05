@@ -11,8 +11,10 @@ import LoginForm from './components/Auth/LoginForm';
 import RegisterForm from './components/Auth/RegisterForm';
 import Dashboard from './pages/Dashboard';
 import BookService from './pages/BookService';
+import Garage from './pages/Garage';
 import AdminDashboard from './pages/AdminDashboard';
 import ProfileDashboard from './pages/ProfileDashboard';
+import ServiceVault from './pages/ServiceVault';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -112,10 +114,26 @@ function App() {
                 }
               />
               <Route
+                path="/garage"
+                element={
+                  <ProtectedRoute>
+                    <Garage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
                 path="/profile"
                 element={
                   <ProtectedRoute>
                     <ProfileDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/vault"
+                element={
+                  <ProtectedRoute>
+                    <ServiceVault />
                   </ProtectedRoute>
                 }
               />
