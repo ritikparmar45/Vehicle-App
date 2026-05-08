@@ -5,7 +5,6 @@ const AuthContext = createContext();
 
 // ✅ Use VITE_API_URL from .env (default to '/api' for proxy support)
 const API_URL = import.meta.env.VITE_API_URL || '/api';
-console.log(API_URL)
 
 // 🔐 Automatically add token to all Axios requests
 axios.interceptors.request.use((config) => {

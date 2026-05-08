@@ -35,6 +35,18 @@ Vehicle_App/Project/
     └── public/         # Static assets
 ```
 
+## 🏗 System Architecture
+
+```mermaid
+graph TD
+    User((User)) -->|React Router| Frontend[Frontend React/Vite]
+    Frontend -->|Axios/JWT| API[Backend Express API]
+    API -->|Mongoose| DB[(MongoDB)]
+    API -->|Node-Cron| Jobs[Background Tasks]
+    API -->|PDFKit| Docs[Receipt Generation]
+    API -->|Nodemailer| Email[Notification Service]
+```
+
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -91,6 +103,21 @@ Vehicle_App/Project/
 - **Automated Tasks:** Cron jobs running in the background for scheduled operations.
 - **Receipt Generation:** Automatically create PDF receipts for successful bookings.
 - **Email Alerts:** Notifications sent to users for booking updates and confirmations.
+
+## 🗺️ Roadmap & Future Enhancements
+
+### Phase 1: AI & Automation
+- [ ] **Predictive Maintenance:** Integrate an ML model to suggest service intervals based on driving patterns.
+- [ ] **WhatsApp Integration:** Automated service reminders and status updates via WhatsApp Business API.
+
+### Phase 2: User Experience
+- [ ] **Real-time Tracking:** Live GPS tracking of mobile mechanics for "Home Service" bookings.
+- [ ] **Payment Gateway:** Integration with Stripe/Razorpay for secure, in-app digital payments.
+
+### Phase 3: Engineering Excellence
+- [ ] **TypeScript:** Complete migration to TypeScript for enhanced type safety.
+- [ ] **Unit Testing:** Achieve 80%+ test coverage with Jest and Supertest.
+- [ ] **Mobile App:** Build a cross-platform mobile application using React Native.
 
 ## 📄 License
 This project is licensed under the MIT License.
