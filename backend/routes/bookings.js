@@ -6,6 +6,7 @@ import User from '../models/User.js';
 import { authenticateToken, authorizeRoles } from '../middleware/auth.js';
 import { validate } from '../middleware/validate.js';
 import ErrorResponse from '../utils/errorResponse.js';
+import sendEmail from '../utils/mailer.js';
 
 const router = express.Router();
 
@@ -93,6 +94,21 @@ router.post(
         { path: 'service', select: 'name description price duration' }
       ]);
 
+      // Send confirmation email
+      if (booking.user && booking.user.email) {
+        const emailHtml = `
+          <h2>Booking Confirmed!</h2>
+          <p>Hi ${booking.user.name},</p>
+          <p>Your service booking for <b>${booking.service.name}</b> has been received.</p>
+          <p><b>Date:</b> ${new Date(booking.appointmentDate).toLocaleDateString()}</p>
+          <p><b>Time:</b> ${booking.appointmentTime}</p>
+          <p><b>Vehicle:</b> ${booking.vehicleDetails.make} ${booking.vehicleDetails.model}</p>
+          <br>
+          <p>Thank you for choosing AutoCare!</p>
+        `;
+        await sendEmail(booking.user.email, "Booking Confirmation - AutoCare", emailHtml);
+      }
+
       res.status(201).json({
         success: true,
         message: 'Booking sequence initiated successfully',
@@ -148,6 +164,20 @@ router.patch('/:id/status', authenticateToken, async (req, res, next) => {
       message: 'Status synchronization complete',
       booking
     });
+
+    // Send status update email asynchronously
+    if (booking.user && booking.user.email) {
+      const statusHtml = `
+        <h2>Booking Status Update</h2>
+        <p>Hi ${booking.user.name},</p>
+        <p>The status of your booking for <b>${booking.service.name}</b> has been updated to: <b>${status.toUpperCase()}</b>.</p>
+        <p><b>Vehicle:</b> ${booking.vehicleDetails.make} ${booking.vehicleDetails.model}</p>
+        <br>
+        <p>You can check more details in your dashboard.</p>
+        <p>Thank you,<br/>AutoCare Team</p>
+      `;
+      sendEmail(booking.user.email, `Booking Status Updated: ${status.toUpperCase()}`, statusHtml);
+    }
   } catch (error) {
     next(error);
   }

@@ -12,20 +12,35 @@ import {
   ArrowRight
 } from 'lucide-react';
 
+import axios from 'axios';
+
 const Contact = () => {
-  const [form, setForm] = useState({ name: '', email: '', message: '' });
+  const [form, setForm] = useState({ name: '', email: '', subject: 'Maintenance Inquiry', message: '' });
   const [sent, setSent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Simulate API call
-    setTimeout(() => {
+    setError(null);
+    
+    try {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      await axios.post(`${API_URL}/mail/contact`, form);
       setSent(true);
-      setIsSubmitting(false);
+      setForm({ name: '', email: '', subject: 'Maintenance Inquiry', message: '' });
       setTimeout(() => setSent(false), 5000);
-    }, 1500);
+    } catch (err) {
+      console.error('Error sending email:', err);
+      setError(err.response?.data?.message || 'Failed to send message. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -95,73 +110,94 @@ const Contact = () => {
           <div className="lg:col-span-7 bg-slate-900/50 rounded-[3rem] p-8 sm:p-16 card-shadow border-slate-800/50 relative overflow-hidden animate-slide-up [animation-delay:400ms]">
              <div className="absolute top-0 right-0 w-64 h-64 bg-accent-primary/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
              
-             {sent ? (
-               <div className="h-full flex flex-col items-center justify-center text-center py-24 animate-fade-in">
-                  <div className="w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center mb-10 animate-float">
-                     <CheckCircle2 className="w-12 h-12 text-emerald-500" />
-                  </div>
-                  <h3 className="text-4xl font-heading font-black text-slate-900 mb-6 tracking-tight">Transmission Received</h3>
-                  <p className="text-slate-500 font-medium max-w-sm text-lg leading-relaxed mb-12">
-                    Our concierge team has received your inquiry. A specialist will reach out within the next 2 business hours.
-                  </p>
-                  <button 
-                    onClick={() => setSent(false)}
-                    className="text-sm font-black text-accent-primary uppercase tracking-widest border-b-2 border-accent-primary/20 pb-2 hover:border-accent-primary transition-all"
-                  >
-                    Send another message
-                  </button>
-               </div>
-             ) : (
-               <form onSubmit={handleSubmit} className="space-y-10 relative">
-                  <div className="space-y-8">
-                    <div className="grid md:grid-cols-2 gap-8">
-                      <div className="space-y-3">
-                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Full Name</label>
-                         <input 
-                           type="text" 
-                           required
-                           placeholder="Johnathan Doe" 
-                           className="input-field"
-                         />
-                      </div>
-                      <div className="space-y-3">
-                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Email Address</label>
-                         <input 
-                           type="email" 
-                           required
-                           placeholder="john@company.com" 
-                           className="input-field"
-                         />
-                      </div>
-                    </div>
+              {error && (
+                <div className="mb-8 p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl flex items-center gap-3 text-rose-500 text-sm font-bold">
+                  <AlertCircle className="w-5 h-5" />
+                  {error}
+                </div>
+              )}
 
-                    <div className="space-y-3">
-                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Subject</label>
-                       <select className="input-field appearance-none bg-slate-50/50">
-                          <option>Maintenance Inquiry</option>
-                          <option>Custom Modification</option>
-                          <option>Parts & Accessories</option>
-                          <option>Corporate Partnership</option>
-                       </select>
-                    </div>
-
-                    <div className="space-y-3">
-                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Message Body</label>
-                       <textarea 
-                         rows={5} 
-                         required
-                         placeholder="How can we assist you today?" 
-                         className="input-field resize-none"
-                       />
-                    </div>
-                  </div>
-
-                  <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100 flex gap-4">
-                     <AlertCircle className="w-5 h-5 text-slate-400 flex-shrink-0" />
-                     <p className="text-[10px] font-bold leading-relaxed uppercase tracking-widest text-slate-400">
-                       By initiating this contact, you acknowledge our data processing policy. We prioritize your privacy and vehicle security above all.
-                     </p>
-                  </div>
+              {sent ? (
+                <div className="h-full flex flex-col items-center justify-center text-center py-24 animate-fade-in">
+                   <div className="w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center mb-10 animate-float">
+                      <CheckCircle2 className="w-12 h-12 text-emerald-500" />
+                   </div>
+                   <h3 className="text-4xl font-heading font-black text-slate-900 mb-6 tracking-tight">Transmission Received</h3>
+                   <p className="text-slate-500 font-medium max-w-sm text-lg leading-relaxed mb-12">
+                     Our concierge team has received your inquiry. A specialist will reach out within the next 2 business hours.
+                   </p>
+                   <button 
+                     onClick={() => setSent(false)}
+                     className="text-sm font-black text-accent-primary uppercase tracking-widest border-b-2 border-accent-primary/20 pb-2 hover:border-accent-primary transition-all"
+                   >
+                     Send another message
+                   </button>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-10 relative">
+                   <div className="space-y-8">
+                     <div className="grid md:grid-cols-2 gap-8">
+                       <div className="space-y-3">
+                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Full Name</label>
+                          <input 
+                            type="text" 
+                            name="name"
+                            value={form.name}
+                            onChange={handleChange}
+                            required
+                            placeholder="Johnathan Doe" 
+                            className="input-field"
+                          />
+                       </div>
+                       <div className="space-y-3">
+                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Email Address</label>
+                          <input 
+                            type="email" 
+                            name="email"
+                            value={form.email}
+                            onChange={handleChange}
+                            required
+                            placeholder="john@company.com" 
+                            className="input-field"
+                          />
+                       </div>
+                     </div>
+ 
+                     <div className="space-y-3">
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Subject</label>
+                        <select 
+                          name="subject"
+                          value={form.subject}
+                          onChange={handleChange}
+                          className="input-field appearance-none bg-slate-50/50"
+                        >
+                           <option>Maintenance Inquiry</option>
+                           <option>Custom Modification</option>
+                           <option>Parts & Accessories</option>
+                           <option>Corporate Partnership</option>
+                        </select>
+                     </div>
+ 
+                     <div className="space-y-3">
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Message Body</label>
+                        <textarea 
+                          rows={5} 
+                          name="message"
+                          value={form.message}
+                          onChange={handleChange}
+                          required
+                          placeholder="How can we assist you today?" 
+                          className="input-field resize-none"
+                        />
+                     </div>
+                   </div>
+ 
+                   <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100 flex gap-4">
+                      <AlertCircle className="w-5 h-5 text-slate-400 flex-shrink-0" />
+                      <p className="text-[10px] font-bold leading-relaxed uppercase tracking-widest text-slate-400">
+                        By initiating this contact, you acknowledge our data processing policy. We prioritize your privacy and vehicle security above all.
+                      </p>
+                   </div>
 
                   <button 
                     type="submit"

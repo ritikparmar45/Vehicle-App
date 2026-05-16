@@ -4,6 +4,7 @@ import Booking from '../models/Booking.js';
 import Service from '../models/Service.js';
 import { authenticateToken, authorizeRoles } from '../middleware/auth.js';
 import ErrorResponse from '../utils/errorResponse.js';
+import sendEmail from '../utils/mailer.js';
 
 const router = express.Router();
 
@@ -177,6 +178,19 @@ router.patch('/bookings/:id/status', authenticateToken, authorizeRoles('admin'),
       message: `System Matrix Updated: Booking marked as ${status}`,
       booking
     });
+
+    // Notify user of admin update
+    if (booking.user && booking.user.email) {
+      const adminUpdateHtml = `
+        <h2>Booking Update Notification</h2>
+        <p>Hi ${booking.user.name},</p>
+        <p>Your booking for <b>${booking.service.name}</b> has been updated by the administrator.</p>
+        <p>New Status: <b>${status.toUpperCase()}</b></p>
+        <br>
+        <p>Thank you,<br/>AutoCare Management</p>
+      `;
+      sendEmail(booking.user.email, `Admin Update: Booking ${status.toUpperCase()}`, adminUpdateHtml);
+    }
   } catch (error) {
     next(error);
   }

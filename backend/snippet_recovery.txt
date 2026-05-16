@@ -1,0 +1,23 @@
+Here is the complete LaTeX code for all 12 screenshots. I have written **professional, academic captions** and **technical descriptions** for each one so your thesis looks high-quality and detailed.
+
+You can just copy and paste this entire block into your LaTeX editor. 
+
+```latex
+% ==========================================
+% SECTION 14.1: IMPLEMENTATION GALLERY
+% ==========================================
+
+% --- Figure 1: Server Entry Point ---
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{server_init.png}
+    \caption{Initialization of the Express.js Server and Middleware Stack.}
+    \label{fig:server_init}
+\end{figure}
+\textbf{Technical Detail:} This snippet shows the main entry point where environment variables are loaded, and security middlewares like \texttt{helmet} and \texttt{cors} are initialized to protect the API.
+
+% --- Figure 2: Authentication Routes ---
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{auth_routes.png}
+<truncated 4987 bytes>
