@@ -20,7 +20,7 @@ router.get('/', async (req, res, next) => {
     if (category) filter.category = category;
     if (vehicleType && vehicleType !== 'both') filter.vehicleType = { $in: [vehicleType, 'both'] };
 
-    const services = await Service.find(filter).sort({ createdAt: -1 });
+    const services = await Service.find(filter).sort({ createdAt: -1 })
     
     res.status(200).json({
       success: true,
