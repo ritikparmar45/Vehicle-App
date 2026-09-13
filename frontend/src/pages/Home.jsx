@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Car, 
-  Shield, 
   Clock, 
   Users, 
   Wrench, 
@@ -18,201 +17,198 @@ import {
 const Home = () => {
   const features = [
     {
-      icon: <Users className="h-6 w-6" />,
-      title: 'Expert Mechanics',
-      description: 'Our team consists of certified professionals with years of experience across all major premium vehicle brands.'
+      icon: <Users className="h-6 w-6 text-accent-primary" />,
+      title: 'Certified Master Technicians',
+      description: 'Our certified engineers specialize in high-performance engines, diagnostics, and exotic vehicle maintenance.'
     },
     {
-      icon: <ShieldCheck className="h-6 w-6" />,
-      title: 'Quality Guaranteed',
-      description: 'We use only genuine OEM parts. All our services come with a standard 6-month comprehensive warranty.'
+      icon: <ShieldCheck className="h-6 w-6 text-emerald-400" />,
+      title: 'Genuine OEM Guarantee',
+      description: 'We install only original factory parts. Every service is backed by a 6-month comprehensive warranty.'
     },
     {
-      icon: <Zap className="h-6 w-6" />,
-      title: 'Quick Turnaround',
-      description: 'Book online, drop off your car, and get it back on time. We value your schedule and time.'
+      icon: <Zap className="h-6 w-6 text-amber-400" />,
+      title: 'Rapid Queue Turnaround',
+      description: 'Schedule online, track diagnostic progress live on your dashboard, and collect your machine on time.'
     }
   ];
 
   const services = [
     { 
-      name: 'Basic Service', 
+      name: 'Basic Care Protocol', 
       price: '₹999', 
       duration: '2 Hours', 
-      features: ['Oil Change', 'Filter Replacement', 'Basic Wash', 'Visual Inspection'],
+      features: ['Engine Oil Change', 'Oil Filter Replacement', 'Visual Inspection', 'Multi-point Fluid Top-Up'],
       popular: false 
     },
     { 
-      name: 'Standard Service', 
+      name: 'Standard Maintenance', 
       price: '₹1499', 
       duration: '4 Hours', 
-      features: ['Engine Oil Change', 'Brake Inspection', 'Tire Rotation', 'Interior Clean', 'Fluid Top-ups'],
+      features: ['Full Synthetic Oil Flush', 'Ceramic Brake Inspection', 'Dynamic Wheel Balancing', 'AC Filter & Sanitization', 'Live ECU Diagnostics'],
       popular: true 
     },
     { 
-      name: 'Premium Service', 
+      name: 'Bespoke Performance Overhaul', 
       price: '₹2499', 
       duration: 'Full Day', 
-      features: ['Complete Diagnostics', 'AC Servicing', 'Wheel Alignment', 'Full Detailing', 'Deep Ceramic Polish'],
+      features: ['Comprehensive 150-Pt Scan', 'Full Climate System Flush', '3D Laser Alignment', 'Exterior Ceramic Detail', 'Engine Bay Restoration'],
       popular: false 
     }
   ];
 
   return (
-    <div className="bg-[#050505] min-h-screen animate-fade-in text-slate-100">
+    <div className="bg-[#050505] min-h-screen animate-fade-in text-slate-100 relative overflow-hidden">
       
       {/* Hero Section */}
-      <section className="relative pt-12 pb-24 lg:pt-32 lg:pb-48 overflow-hidden">
-        {/* Background Decorative Gradients */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] bg-accent-primary/10 blur-[120px] rounded-full animate-pulse-slow"></div>
-          <div className="absolute bottom-[20%] left-[-10%] w-[50%] h-[50%] bg-accent-secondary/10 blur-[120px] rounded-full animate-pulse-slow [animation-delay:2s]"></div>
-        </div>
+      <section className="relative pt-12 pb-24 lg:pt-28 lg:pb-40 overflow-hidden">
+        {/* Background Gradients */}
+        <div className="absolute top-10 left-1/4 w-[40rem] h-[40rem] bg-accent-primary/10 blur-[140px] rounded-full pointer-events-none"></div>
+        <div className="absolute bottom-10 right-10 w-[30rem] h-[30rem] bg-indigo-500/10 blur-[140px] rounded-full pointer-events-none"></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-20 items-center">
-            <div className="max-w-2xl space-y-10">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border-slate-100 text-slate-600 text-[10px] font-black uppercase tracking-[0.2em] mb-4 animate-slide-up shadow-sm">
-                <Star className="w-4 h-4 text-accent-primary fill-accent-primary" />
-                <span>Premium Auto Care Solutions</span>
+          <div className="grid lg:grid-cols-12 gap-12 items-center">
+            
+            <div className="lg:col-span-6 space-y-8 text-left">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-dark border border-white/10 text-accent-primary text-[10px] font-black uppercase tracking-[0.25em]">
+                <Star className="w-3.5 h-3.5 fill-accent-primary text-accent-primary" />
+                <span>Next-Gen Vehicle Care</span>
               </div>
               
-              <div className="space-y-6">
-                <h1 className="text-6xl lg:text-8xl font-heading font-black text-white leading-[0.95] tracking-tight animate-slide-up [animation-delay:100ms]">
+              <div className="space-y-4">
+                <h1 className="text-5xl sm:text-7xl font-heading font-black text-white leading-[0.95] tracking-tight">
                   Precision <br/>
                   <span className="text-gradient">Performance</span>
                 </h1>
-                <p className="text-xl text-slate-500 font-medium leading-relaxed max-w-lg animate-slide-up [animation-delay:200ms]">
-                  Experience industry-leading vehicle diagnostics and maintenance. Transparent pricing, elite mechanics, zero compromise.
+                <p className="text-lg text-slate-400 font-medium leading-relaxed max-w-xl">
+                  World-class diagnostic technology and bespoke vehicle maintenance. Transparent pricing, certified master technicians, and zero compromise.
                 </p>
               </div>
               
-              <div className="flex flex-col sm:flex-row gap-6 animate-slide-up [animation-delay:300ms]">
-                <Link to="/register" className="btn-primary group">
-                  <span>Initiate Booking</span>
-                  <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <div className="flex flex-col sm:flex-row gap-4 pt-2">
+                <Link to="/book-service" className="btn-primary group">
+                  <span>Book Service Now</span>
+                  <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
-                <Link to="/services" className="inline-flex justify-center items-center px-10 py-5 border-2 border-slate-800 text-xs font-black uppercase tracking-widest rounded-2xl text-white bg-slate-900/50 hover:bg-slate-800 hover:border-slate-700 transition-all backdrop-blur-sm shadow-sm active:scale-95">
+                <Link to="/services" className="px-8 py-4 glass-dark rounded-2xl text-xs font-black uppercase tracking-widest text-white border border-white/10 hover:border-accent-primary/40 hover:bg-white/10 transition-all flex items-center justify-center">
                   Explore Services
                 </Link>
               </div>
 
-              {/* Stats */}
-              <div className="flex items-center gap-12 pt-12 border-t border-slate-800 animate-slide-up [animation-delay:400ms]">
+              {/* Live Telemetry Stats */}
+              <div className="flex items-center gap-10 pt-8 border-t border-white/10">
                  <div>
-                    <h4 className="text-4xl font-black text-white">10k+</h4>
-                    <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mt-1">Units Serviced</p>
+                    <h4 className="text-3xl font-heading font-black text-white">10,000+</h4>
+                    <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">Vehicles Serviced</p>
                  </div>
-                 <div className="w-px h-12 bg-slate-800"></div>
+                 <div className="w-px h-10 bg-white/10"></div>
                  <div>
-                    <h4 className="text-4xl font-black text-white">4.9/5</h4>
-                    <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mt-1">Satisfaction</p>
+                    <h4 className="text-3xl font-heading font-black text-white">4.9 / 5</h4>
+                    <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">Customer Rating</p>
                  </div>
               </div>
             </div>
             
             {/* Visual Hero Graphic */}
-            <div className="relative hidden lg:block animate-slide-up [animation-delay:400ms]">
-               <div className="relative rounded-[3rem] overflow-hidden shadow-2xl border-8 border-slate-900 bg-slate-900 aspect-[4/3] group">
+            <div className="lg:col-span-6 relative">
+               <div className="relative rounded-[3rem] overflow-hidden border-2 border-white/10 shadow-2xl bg-slate-900 aspect-[16/10] group">
                   <img 
-                    src="/premium_vehicle_service_hero_1777871020415.png" 
-                    alt="Premium Workshop" 
-                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-all duration-[2000ms]"
+                    src="/supercar_hero.jpg" 
+                    alt="Precision Supercar Workshop" 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-all duration-700"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-tr from-slate-900/20 to-transparent"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent"></div>
                   
                   {/* Floating Performance Indicator */}
-                  <div className="absolute bottom-8 left-8 glass p-6 rounded-3xl animate-float shadow-2xl">
+                  <div className="absolute bottom-6 left-6 glass-dark p-5 rounded-2xl border border-white/10 shadow-2xl backdrop-blur-2xl">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-2xl bg-accent-success/10 flex items-center justify-center">
-                        <CheckCircle className="w-6 h-6 text-accent-success" />
+                      <div className="w-11 h-11 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                        <CheckCircle className="w-5 h-5" />
                       </div>
                       <div>
-                        <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest">Diagnostic Status</p>
-                        <p className="text-lg font-black text-slate-900 tracking-tight">Optimal Performance</p>
+                        <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest">Diagnostic Telemetry</p>
+                        <p className="text-sm font-black text-white tracking-tight">Optimal Vehicle Calibration</p>
                       </div>
                     </div>
                   </div>
                </div>
-
-               {/* Decorative Element */}
-               <div className="absolute -top-10 -right-10 w-40 h-40 bg-accent-primary/20 rounded-full blur-3xl animate-pulse-slow"></div>
             </div>
+
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-32 bg-[#050505] relative">
+      <section className="py-24 bg-[#08080a] relative border-y border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-24">
-            <div className="inline-block px-4 py-1 rounded-full bg-slate-900 text-accent-primary text-[10px] font-black uppercase tracking-[0.2em] mb-6 border border-accent-primary/20">Our Standards</div>
-            <h2 className="text-5xl font-heading font-black text-white mb-6 tracking-tight">Engineered for Excellence</h2>
-            <p className="text-xl text-slate-400 font-medium">We combine state-of-the-art diagnostic technology with elite mechanical expertise to deliver unmatched results.</p>
+          <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+            <div className="inline-block px-4 py-1 rounded-full glass border border-accent-primary/20 text-accent-primary text-[10px] font-black uppercase tracking-[0.2em]">Our Engineering Standards</div>
+            <h2 className="text-4xl sm:text-5xl font-heading font-black text-white tracking-tight">Built for Performance</h2>
+            <p className="text-slate-400 text-base font-medium">Combining factory diagnostic computers with master craftsmanship to deliver unmatched results.</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-10">
+          <div className="grid md:grid-cols-3 gap-8">
             {features.map((feature, idx) => (
-              <div key={idx} className="bg-slate-900/40 p-12 rounded-[2.5rem] border border-slate-800 transition-all duration-500 group hover:bg-slate-900 hover:shadow-2xl hover:-translate-y-2">
-                <div className="w-16 h-16 rounded-2xl bg-slate-800 text-accent-primary flex items-center justify-center mb-10 shadow-sm group-hover:bg-accent-primary group-hover:text-white transition-all duration-500">
+              <div key={idx} className="glass-dark p-8 sm:p-10 rounded-[2.5rem] border border-white/10 card-shadow-hover transition-all duration-500 group">
+                <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
                   {feature.icon}
                 </div>
-                <h3 className="text-2xl font-black text-white mb-6 tracking-tight group-hover:text-accent-primary transition-colors">{feature.title}</h3>
-                <p className="text-slate-400 font-medium leading-relaxed text-lg">{feature.description}</p>
+                <h3 className="text-xl font-heading font-black text-white mb-3 tracking-tight group-hover:text-accent-primary transition-colors">{feature.title}</h3>
+                <p className="text-slate-400 text-sm font-medium leading-relaxed">{feature.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section className="py-32 bg-[#0a0a0a] relative overflow-hidden">
-         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="flex flex-col md:flex-row justify-between items-end mb-24">
-              <div className="max-w-2xl space-y-4">
-                <h2 className="text-5xl font-heading font-black text-white tracking-tight leading-tight">Maintenance <br/> Programs</h2>
-                <p className="text-xl text-slate-400 font-medium">Absolute transparency. No hidden fees. Just world-class service.</p>
+      {/* Pricing / Packages */}
+      <section className="py-24 relative">
+         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-16">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+              <div className="max-w-2xl space-y-3">
+                <h2 className="text-4xl sm:text-5xl font-heading font-black text-white tracking-tight">Maintenance Programs</h2>
+                <p className="text-slate-400 text-base font-medium">Transparent fixed pricing. No surprise fees. Standardized service checklists.</p>
               </div>
-              <Link to="/services" className="mt-8 md:mt-0 group flex items-center text-xs font-black uppercase tracking-widest text-slate-300 hover:text-accent-primary transition-colors">
-                Compare All Plans <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-2 transition-transform" />
+              <Link to="/services" className="group flex items-center text-xs font-black uppercase tracking-widest text-slate-300 hover:text-accent-primary transition-colors">
+                Compare All Programs <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" />
               </Link>
             </div>
 
-            <div className="grid lg:grid-cols-3 gap-10">
+            <div className="grid lg:grid-cols-3 gap-8">
                {services.map((svc, idx) => (
-                 <div key={idx} className={`relative bg-slate-900/50 rounded-[3rem] p-12 transition-all duration-500 group ${svc.popular ? 'border-2 border-accent-primary shadow-2xl lg:-translate-y-6' : 'border border-slate-800 shadow-xl hover:shadow-2xl hover:-translate-y-2'}`}>
+                 <div key={idx} className={`relative glass-dark rounded-[2.5rem] p-8 sm:p-10 transition-all duration-500 flex flex-col justify-between ${svc.popular ? 'border-2 border-accent-primary shadow-[0_0_40px_rgba(249,115,22,0.2)] lg:-translate-y-4' : 'border border-white/10 hover:border-white/20 shadow-xl'}`}>
                     
                     {svc.popular && (
-                      <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-accent-primary text-white px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl">
-                        Most Requested
+                      <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-accent-primary to-orange-600 text-white px-5 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest shadow-xl">
+                        Most Popular Choice
                       </div>
                     )}
 
-                    <div className="space-y-6 mb-12">
-                      <h3 className="text-3xl font-black text-white tracking-tight group-hover:text-accent-primary transition-colors">{svc.name}</h3>
-                      <div className="flex items-center gap-2 text-[10px] font-black text-slate-500 uppercase tracking-widest">
-                        <Clock className="w-4 h-4"/> {svc.duration}
+                    <div className="space-y-6">
+                      <div className="space-y-2">
+                        <h3 className="text-2xl font-heading font-black text-white tracking-tight">{svc.name}</h3>
+                        <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                          <Clock className="w-3.5 h-3.5 text-accent-primary"/> {svc.duration}
+                        </div>
                       </div>
-                    </div>
-                    
-                    <div className="mb-12">
-                      <span className="text-6xl font-black text-white tracking-tighter">{svc.price}</span>
-                      <span className="text-slate-500 ml-2 font-black uppercase tracking-widest text-[10px]">/ Appointment</span>
+                      
+                      <div className="pb-6 border-b border-white/5">
+                        <span className="text-5xl font-heading font-black text-white tracking-tight">{svc.price}</span>
+                        <span className="text-slate-400 ml-2 font-black uppercase tracking-widest text-[9px]">/ Appointment</span>
+                      </div>
+
+                      <ul className="space-y-3.5 mb-8">
+                         {svc.features.map((feat, i) => (
+                           <li key={i} className="flex items-center gap-3">
+                             <CheckCircle className="h-4 w-4 text-emerald-400 flex-shrink-0" />
+                             <span className="text-slate-300 text-sm font-medium">{feat}</span>
+                           </li>
+                         ))}
+                      </ul>
                     </div>
 
-                    <ul className="space-y-6 mb-16">
-                       {svc.features.map((feat, i) => (
-                         <li key={i} className="flex items-center gap-4">
-                           <div className="w-6 h-6 rounded-full bg-slate-800 flex items-center justify-center">
-                             <CheckCircle className="h-4 w-4 text-accent-primary" />
-                           </div>
-                           <span className="text-slate-400 font-medium">{feat}</span>
-                         </li>
-                       ))}
-                    </ul>
-
-                    <Link to="/register" className={`w-full block text-center py-6 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all ${svc.popular ? 'bg-accent-primary text-white hover:bg-accent-primary/80 shadow-xl' : 'bg-slate-800 text-white hover:bg-slate-700'}`}>
-                      Select Program
+                    <Link to="/book-service" className={`w-full text-center py-4 rounded-2xl font-black uppercase tracking-widest text-xs transition-all ${svc.popular ? 'btn-primary' : 'bg-white/10 text-white hover:bg-white/20 border border-white/10'}`}>
+                      Book Program
                     </Link>
                  </div>
                ))}
@@ -221,26 +217,23 @@ const Home = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-32 relative bg-[#050505]">
+      <section className="py-24 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="relative bg-slate-900 rounded-[4rem] p-16 md:p-24 overflow-hidden group border border-slate-800">
-            <div className="absolute inset-0 bg-gradient-to-br from-accent-primary/20 to-transparent"></div>
-            <div className="absolute top-0 right-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20"></div>
+          <div className="relative glass-dark rounded-[3rem] p-10 sm:p-16 overflow-hidden border border-white/10 shadow-2xl">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-accent-primary/15 blur-[140px] rounded-full pointer-events-none"></div>
             
-            <div className="relative z-10 max-w-3xl space-y-10">
-              <h2 className="text-5xl md:text-7xl font-heading font-black text-white tracking-tight leading-tight">Secure Your <br/> Performance Today</h2>
-              <p className="text-slate-400 text-xl font-medium max-w-2xl leading-relaxed">
-                Join the elite community of drivers who trust our bespoke maintenance programs. Track your history, receive alerts, and stay ahead.
+            <div className="relative z-10 max-w-2xl space-y-6">
+              <h2 className="text-4xl sm:text-6xl font-heading font-black text-white tracking-tight leading-tight">Secure Your Service Window Today</h2>
+              <p className="text-slate-400 text-lg font-medium leading-relaxed">
+                Join thousands of drivers who trust AutoCare Labs for precision diagnostics, transparent billing, and digital receipts.
               </p>
-              <div className="flex flex-col sm:flex-row gap-6">
-                <Link to="/register" className="inline-flex justify-center items-center px-12 py-6 bg-white text-slate-900 font-black uppercase tracking-widest text-xs rounded-2xl shadow-2xl hover:scale-105 active:scale-95 transition-all">
-                  Create Private Account <ArrowRight className="ml-3 w-5 h-5 text-accent-primary" />
+              <div className="pt-2">
+                <Link to="/register" className="btn-primary">
+                  <span>Create Account</span>
+                  <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
             </div>
-
-            {/* Decorative background Car icon */}
-            <Car className="absolute -bottom-20 -right-20 w-96 h-96 text-white/5 -rotate-12 pointer-events-none group-hover:rotate-0 transition-all duration-[2000ms]" />
           </div>
         </div>
       </section>

@@ -105,37 +105,40 @@ const Dashboard = () => {
 
   const getStatusStyle = (status) => {
     switch (status) {
-      case 'pending': return 'bg-amber-50 text-amber-600 border-amber-100';
-      case 'approved': return 'bg-indigo-50 text-indigo-600 border-indigo-100';
-      case 'in-progress': return 'bg-purple-50 text-purple-600 border-purple-100';
-      case 'completed': return 'bg-emerald-50 text-emerald-600 border-emerald-100';
+      case 'pending': return 'badge-pending';
+      case 'approved': return 'badge-approved';
+      case 'in-progress': return 'badge-in-progress';
+      case 'completed': return 'badge-completed';
       case 'cancelled': 
-      case 'rejected': return 'bg-rose-50 text-rose-600 border-rose-100';
-      default: return 'bg-slate-50 text-slate-600 border-slate-100';
+      case 'rejected': return 'badge-cancelled';
+      default: return 'badge-pending';
     }
   };
 
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-slate-50/50 py-12 animate-fade-in">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#050505] text-white py-12 pt-28 animate-fade-in">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-white/5">
           <div>
-            <h1 className="text-4xl font-heading font-extrabold text-slate-900 tracking-tight">
-              Hello, <span className="text-brand-600">{user.name.split(' ')[0]}</span>!
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-accent-primary/10 border border-accent-primary/20 text-accent-primary text-[10px] font-black uppercase tracking-[0.2em] mb-3">
+              <TrendingUp className="w-3.5 h-3.5" />
+              <span>Operational Dashboard</span>
+            </div>
+            <h1 className="text-4xl sm:text-5xl font-heading font-black text-white tracking-tight">
+              Welcome Back, <span className="text-gradient">{user.name.split(' ')[0]}</span>
             </h1>
-            <p className="text-slate-500 mt-2 font-medium flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 text-emerald-500" />
-              Your vehicle maintenance is on track.
+            <p className="text-slate-400 mt-2 text-sm font-medium">
+              Manage your upcoming appointments, track service status, and access digital receipts.
             </p>
           </div>
           
           <Link
             to="/book-service"
-            className="group inline-flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-8 py-4 rounded-2xl font-bold shadow-xl shadow-brand-600/20 transition-all hover:-translate-y-1 active:scale-95"
+            className="btn-primary group shadow-xl shadow-accent-primary/20 hover:shadow-accent-primary/40 active:scale-95 transition-all"
           >
             <Plus className="w-5 h-5" />
             <span>Book New Service</span>
@@ -144,21 +147,21 @@ const Dashboard = () => {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
-            { label: 'Total Services', icon: <History />, value: stats.total, color: 'brand' },
-            { label: 'Upcoming', icon: <Calendar />, value: stats.approved + stats.pending, color: 'indigo' },
-            { label: 'In Workshop', icon: <Clock />, value: stats.approved, color: 'amber' },
-            { label: 'Completed', icon: <CheckCircle />, value: stats.completed, color: 'emerald' },
+            { label: 'Total Services', icon: <History />, value: stats.total, color: 'text-accent-primary bg-accent-primary/10 border-accent-primary/20' },
+            { label: 'Upcoming', icon: <Calendar />, value: stats.approved + stats.pending, color: 'text-indigo-400 bg-indigo-500/10 border-indigo-500/20' },
+            { label: 'In Workshop', icon: <Clock />, value: stats.approved, color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
+            { label: 'Completed', icon: <CheckCircle />, value: stats.completed, color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
           ].map((stat, i) => (
-            <div key={i} className="bg-white rounded-3xl p-6 border border-slate-100 card-shadow hover:card-shadow-hover transition-all duration-300">
+            <div key={i} className="glass rounded-3xl p-6 border border-white/10 card-shadow-hover transition-all">
               <div className="flex items-center gap-4">
-                <div className={`p-3 rounded-2xl bg-${stat.color}-50 text-${stat.color}-600`}>
+                <div className={`p-4 rounded-2xl border ${stat.color}`}>
                   {React.cloneElement(stat.icon, { className: 'w-6 h-6' })}
                 </div>
                 <div>
-                  <p className="text-slate-500 text-xs font-bold uppercase tracking-wider">{stat.label}</p>
-                  <p className="text-2xl font-heading font-extrabold text-slate-900">{stat.value}</p>
+                  <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">{stat.label}</p>
+                  <p className="text-3xl font-heading font-black text-white mt-1 tracking-tight">{stat.value}</p>
                 </div>
               </div>
             </div>
@@ -166,109 +169,103 @@ const Dashboard = () => {
         </div>
 
         {/* Main Content Card */}
-        <div className="bg-white rounded-[2.5rem] border border-slate-100 card-shadow overflow-hidden">
-          <div className="px-8 py-8 border-b border-slate-50 flex items-center justify-between">
-            <h2 className="text-2xl font-heading font-bold text-slate-900">Your Bookings</h2>
-            <div className="flex items-center gap-2 text-sm font-bold text-slate-400 bg-slate-50 px-4 py-2 rounded-xl">
-              <Filter className="w-4 h-4" />
-              <span>Recent first</span>
+        <div className="glass-dark rounded-[2.5rem] border border-white/10 shadow-2xl overflow-hidden">
+          <div className="px-8 py-6 border-b border-white/5 flex items-center justify-between">
+            <h2 className="text-xl font-heading font-black text-white tracking-tight">Active & Past Bookings</h2>
+            <div className="flex items-center gap-2 text-xs font-bold text-slate-400 bg-white/5 px-4 py-2 rounded-xl border border-white/5">
+              <Filter className="w-4 h-4 text-accent-primary" />
+              <span>Recent Activity</span>
             </div>
           </div>
 
           {bookings.length === 0 ? (
             <div className="text-center py-24 flex flex-col items-center">
-              <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-6">
-                <Car className="h-10 w-10 text-slate-300" />
+              <div className="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center mb-6 border border-white/10">
+                <Car className="h-9 w-9 text-slate-500" />
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-2">No active bookings</h3>
-              <p className="text-slate-500 mb-8 max-w-xs mx-auto font-medium">Your garage is quiet. Schedule a service to keep your vehicle in top shape.</p>
+              <h3 className="text-xl font-black text-white mb-2">No active bookings found</h3>
+              <p className="text-slate-400 mb-8 max-w-sm mx-auto text-sm font-medium">Your garage schedule is empty. Reserve an appointment to maintain peak vehicle performance.</p>
               <Link
                 to="/book-service"
-                className="bg-slate-900 hover:bg-slate-800 text-white px-8 py-3.5 rounded-xl font-bold transition-all shadow-lg active:scale-95"
+                className="btn-primary"
               >
                 Schedule First Service
               </Link>
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-left">
-                <thead className="bg-slate-50/50 text-slate-500 text-xs font-bold uppercase tracking-widest">
+              <table className="w-full text-left border-collapse">
+                <thead className="bg-white/5 text-slate-400 text-[10px] font-black uppercase tracking-widest border-b border-white/5">
                   <tr>
-                    <th className="px-8 py-5">Service & Vehicle</th>
-                    <th className="px-8 py-5">Schedule</th>
-                    <th className="px-8 py-5">Status</th>
-                    <th className="px-8 py-5">Cost</th>
-                    <th className="px-8 py-5 text-right">Options</th>
+                    <th className="px-8 py-4">Service & Vehicle</th>
+                    <th className="px-8 py-4">Schedule Window</th>
+                    <th className="px-8 py-4">Status</th>
+                    <th className="px-8 py-4">Est. Cost</th>
+                    <th className="px-8 py-4 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-50 font-medium">
+                <tbody className="divide-y divide-white/5 font-medium text-sm">
                   {bookings.map((booking) => (
-                    <tr key={booking?._id || Math.random()} className="hover:bg-slate-50/50 transition-colors group">
-                      <td className="px-8 py-6">
+                    <tr key={booking?._id || Math.random()} className="hover:bg-white/5 transition-colors group">
+                      <td className="px-8 py-5">
                         <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 rounded-2xl bg-brand-50 flex items-center justify-center text-brand-600 group-hover:bg-brand-600 group-hover:text-white transition-all">
-                            <Car className="w-6 h-6" />
+                          <div className="w-11 h-11 rounded-2xl bg-accent-primary/10 border border-accent-primary/20 flex items-center justify-center text-accent-primary group-hover:scale-105 transition-all">
+                            <Car className="w-5 h-5" />
                           </div>
                           <div>
-                            <div className="text-slate-900 font-bold">{booking?.service?.name || 'Service'}</div>
-                            <div className="text-xs text-slate-500 font-bold mt-0.5">
-                              {booking?.vehicleDetails?.make} {booking?.vehicleDetails?.model} • {booking?.vehicleDetails?.licensePlate}
+                            <div className="text-white font-bold text-base">{booking?.service?.name || 'Vehicle Service'}</div>
+                            <div className="text-xs text-slate-400 font-semibold mt-0.5">
+                              {booking?.vehicleDetails?.make} {booking?.vehicleDetails?.model} • <span className="text-slate-300 uppercase font-mono">{booking?.vehicleDetails?.licensePlate}</span>
                             </div>
                           </div>
                         </div>
                       </td>
-                      <td className="px-8 py-6">
+                      <td className="px-8 py-5">
                         <div className="flex flex-col">
-                          <span className="text-slate-900 font-bold">{booking?.appointmentDate ? format(new Date(booking.appointmentDate), 'MMM dd, yyyy') : '—'}</span>
-                          <span className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
-                            <Clock className="w-3 h-3" /> {booking?.appointmentTime || '—'}
+                          <span className="text-white font-bold">{booking?.appointmentDate ? format(new Date(booking.appointmentDate), 'MMM dd, yyyy') : '—'}</span>
+                          <span className="text-xs text-slate-400 flex items-center gap-1 mt-0.5 font-semibold">
+                            <Clock className="w-3.5 h-3.5 text-accent-primary" /> {booking?.appointmentTime || '—'}
                           </span>
                         </div>
                       </td>
-                      <td className="px-8 py-6">
-                        <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm ${getStatusStyle(booking?.status)}`}>
-                          <span className={`w-1.5 h-1.5 rounded-full bg-current`}></span>
+                      <td className="px-8 py-5">
+                        <span className={`badge-status ${getStatusStyle(booking?.status)}`}>
+                          <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse"></span>
                           {booking?.status || 'unknown'}
                         </span>
                       </td>
-                      <td className="px-8 py-6">
-                        <span className="text-slate-900 font-black text-lg">₹{booking?.totalAmount || 0}</span>
+                      <td className="px-8 py-5">
+                        <span className="text-white font-black text-lg">₹{booking?.totalAmount || 0}</span>
                       </td>
-                      <td className="px-8 py-6 text-right">
-                        <div className="flex justify-end items-center gap-3">
+                      <td className="px-8 py-5 text-right">
+                        <div className="flex justify-end items-center gap-2">
                           {booking?.status === 'pending' && (
                             <button
                               onClick={() => handleCancelBooking(booking._id)}
-                              className="text-rose-500 hover:text-rose-600 bg-rose-50 hover:bg-rose-100 p-2.5 rounded-xl transition-all"
-                              title="Cancel"
+                              className="text-rose-400 hover:text-white bg-rose-500/10 hover:bg-rose-500 p-2.5 rounded-xl border border-rose-500/20 transition-all"
+                              title="Cancel Booking"
                             >
-                              <XCircle className="w-5 h-5" />
+                              <XCircle className="w-4 h-4" />
                             </button>
                           )}
                           {booking?.status === 'completed' && (
                             <div className="flex gap-2">
                               <button
                                 onClick={() => handleViewReceipt(booking._id)}
-                                className="text-brand-600 hover:text-white hover:bg-brand-600 bg-brand-50 p-2.5 rounded-xl transition-all"
-                                title="View Receipt"
+                                className="text-accent-primary hover:text-white hover:bg-accent-primary bg-accent-primary/10 p-2.5 rounded-xl border border-accent-primary/20 transition-all"
+                                title="View Receipt PDF"
                               >
-                                <Eye className="w-5 h-5" />
+                                <Eye className="w-4 h-4" />
                               </button>
                               <button
                                 onClick={() => handleDownloadReceipt(booking._id)}
-                                className="text-emerald-600 hover:text-white hover:bg-emerald-600 bg-emerald-50 p-2.5 rounded-xl transition-all"
-                                title="Download"
+                                className="text-emerald-400 hover:text-white hover:bg-emerald-500 bg-emerald-500/10 p-2.5 rounded-xl border border-emerald-500/20 transition-all"
+                                title="Download Receipt"
                               >
-                                <Download className="w-5 h-5" />
+                                <Download className="w-4 h-4" />
                               </button>
                             </div>
                           )}
-                          <Link 
-                            to={`/booking-details/${booking._id}`}
-                            className="bg-slate-100 hover:bg-slate-200 text-slate-600 p-2.5 rounded-xl transition-all"
-                          >
-                            <Plus className="w-5 h-5" />
-                          </Link>
                         </div>
                       </td>
                     </tr>

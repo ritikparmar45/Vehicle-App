@@ -51,28 +51,28 @@ const Navbar = () => {
   };
 
   const navLinks = [
-    { label: 'Intelligence', path: '/' },
-    { label: 'Protocol', path: '/about' },
-    { label: 'Catalog', path: '/services' },
-    { label: 'Interface', path: '/contact' },
+    { label: 'Home', path: '/' },
+    { label: 'Services', path: '/services' },
+    { label: 'About Us', path: '/about' },
+    { label: 'Contact', path: '/contact' },
   ];
 
   return (
-    <nav className={`fixed top-0 w-full z-[100] transition-all duration-700 ${isScrolled ? 'py-4' : 'py-8'}`}>
+    <nav className={`fixed top-0 w-full z-[100] transition-all duration-700 ${isScrolled ? 'py-3' : 'py-6'}`}>
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className={`relative flex justify-between items-center h-20 px-8 rounded-[2rem] transition-all duration-700 ${isScrolled ? 'glass-dark border-white/5 shadow-2xl' : 'bg-transparent'}`}>
+        <div className={`relative flex justify-between items-center h-20 px-8 rounded-3xl transition-all duration-700 ${isScrolled ? 'glass-dark border-white/10 shadow-2xl backdrop-blur-2xl' : 'bg-transparent'}`}>
           
           {/* Logo Section */}
-          <Link to="/" className="flex items-center gap-4 group outline-none">
-            <div className="relative w-12 h-12 bg-slate-900 rounded-2xl flex items-center justify-center overflow-hidden transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 shadow-2xl">
+          <Link to="/" className="flex items-center gap-3.5 group outline-none">
+            <div className="relative w-11 h-11 bg-slate-900 border border-white/10 rounded-2xl flex items-center justify-center overflow-hidden transition-all duration-500 group-hover:scale-105 group-hover:border-accent-primary/50 shadow-xl">
               <div className="absolute inset-0 bg-accent-primary opacity-0 group-hover:opacity-20 transition-opacity"></div>
-              <Zap className="h-6 w-6 text-accent-primary animate-pulse" />
+              <Zap className="h-5 w-5 text-accent-primary animate-pulse" />
             </div>
             <div className="flex flex-col">
-              <span className={`text-xl font-heading font-black tracking-tighter leading-none transition-colors duration-500 ${isScrolled || !isHome ? 'text-white' : 'text-slate-900'}`}>
+              <span className="text-xl font-heading font-black tracking-tighter leading-none text-white">
                 AUTOCARE<span className="text-accent-primary">.</span>
               </span>
-              <span className="text-[8px] font-black uppercase tracking-[0.4em] opacity-40 text-slate-400">Precision Labs</span>
+              <span className="text-[9px] font-extrabold uppercase tracking-[0.3em] text-slate-400">Precision Auto Labs</span>
             </div>
           </Link>
 
@@ -82,7 +82,11 @@ const Navbar = () => {
               <Link 
                 key={link.label} 
                 to={link.path}
-                className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 hover:bg-white/10 ${location.pathname === link.path ? 'text-accent-primary' : (isScrolled || !isHome ? 'text-slate-300' : 'text-slate-600')}`}
+                className={`px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 ${
+                  location.pathname === link.path 
+                    ? 'text-accent-primary bg-accent-primary/10 border border-accent-primary/20' 
+                    : 'text-slate-300 hover:text-white hover:bg-white/5'
+                }`}
               >
                 {link.label}
               </Link>
@@ -90,69 +94,68 @@ const Navbar = () => {
           </div>
 
           {/* Action Center */}
-          <div className="hidden md:flex items-center gap-6">
+          <div className="hidden md:flex items-center gap-4">
             {user ? (
-              <div className="flex items-center gap-6">
+              <div className="flex items-center gap-4">
                 <Link
                   to={getDashboardLink()}
-                  className={`flex items-center gap-3 px-6 py-3 rounded-xl transition-all duration-500 group ${isScrolled || !isHome ? 'glass border-white/5 text-white hover:bg-white/10' : 'bg-slate-900 text-white hover:bg-black shadow-xl'}`}
+                  className="flex items-center gap-2.5 px-5 py-2.5 rounded-xl glass border-white/10 text-white hover:border-accent-primary/50 hover:bg-white/10 transition-all duration-300 group"
                 >
                   <LayoutDashboard className="h-4 w-4 text-accent-primary group-hover:rotate-12 transition-transform" />
-                  <span className="text-[10px] font-black uppercase tracking-widest">Dashboard</span>
+                  <span className="text-xs font-bold uppercase tracking-widest">Dashboard</span>
                 </Link>
 
                 <Link
                   to="/garage"
-                  className={`flex items-center gap-3 px-6 py-3 rounded-xl transition-all duration-500 group ${isScrolled || !isHome ? 'glass border-white/5 text-white hover:bg-white/10' : 'bg-slate-50 text-slate-900 hover:bg-white shadow-xl'}`}
+                  className="flex items-center gap-2.5 px-5 py-2.5 rounded-xl glass border-white/10 text-white hover:border-accent-primary/50 hover:bg-white/10 transition-all duration-300 group"
                 >
                   <Car className="h-4 w-4 text-accent-primary group-hover:scale-110 transition-transform" />
-                  <span className="text-[10px] font-black uppercase tracking-widest">Garage</span>
+                  <span className="text-xs font-bold uppercase tracking-widest">Garage</span>
                 </Link>
 
                 <div className="relative group">
-                  <button className={`flex items-center gap-3 px-2 py-2 rounded-2xl transition-all duration-500 ${isScrolled || !isHome ? 'glass border-white/5' : 'bg-slate-50'}`}>
-                    <div className="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center text-accent-primary font-black text-xs shadow-inner">
+                  <button className="flex items-center gap-3 p-1.5 rounded-2xl glass border-white/10 hover:border-accent-primary/40 transition-all">
+                    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-accent-primary to-orange-600 flex items-center justify-center text-white font-black text-xs shadow-md">
                       {user.name[0].toUpperCase()}
                     </div>
                   </button>
 
-                  <div className="absolute right-0 mt-4 w-64 glass-dark border-white/10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] rounded-[2rem] py-4 hidden group-hover:block animate-slide-up overflow-hidden z-[110]">
-                    <div className="px-6 py-4 border-b border-white/5 mb-2 bg-white/5">
-                       <p className="text-[8px] font-black text-accent-primary uppercase tracking-[0.2em] mb-1">Authenticated Operator</p>
-                       <p className="text-sm font-black text-white truncate tracking-tight">{user.name}</p>
+                  <div className="absolute right-0 mt-3 w-64 glass-dark border-white/10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.8)] rounded-2xl py-3 hidden group-hover:block animate-slide-up overflow-hidden z-[110]">
+                    <div className="px-5 py-3 border-b border-white/5 mb-1 bg-white/5">
+                       <p className="text-[9px] font-black text-accent-primary uppercase tracking-[0.2em] mb-0.5">Logged In User</p>
+                       <p className="text-sm font-bold text-white truncate tracking-tight">{user.name}</p>
                     </div>
-                    <Link to="/profile" className="flex items-center px-6 py-3.5 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:bg-white/5 hover:text-white transition-all">
-                      <User className="h-4 w-4 mr-4 text-accent-primary" /> Profile Settings
+                    <Link to="/profile" className="flex items-center px-5 py-3 text-xs font-bold uppercase tracking-widest text-slate-300 hover:bg-white/5 hover:text-white transition-all">
+                      <User className="h-4 w-4 mr-3 text-accent-primary" /> Profile Settings
                     </Link>
-                    <Link to="/vault" className="flex items-center px-6 py-3.5 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:bg-white/5 hover:text-white transition-all">
-                      <ShieldCheck className="h-4 w-4 mr-4 text-accent-primary" /> Digital Vault
+                    <Link to="/vault" className="flex items-center px-5 py-3 text-xs font-bold uppercase tracking-widest text-slate-300 hover:bg-white/5 hover:text-white transition-all">
+                      <ShieldCheck className="h-4 w-4 mr-3 text-accent-primary" /> Digital Vault
                     </Link>
-                    <Link to="/garage" className="flex items-center px-6 py-3.5 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:bg-white/5 hover:text-white transition-all">
-                      <Car className="h-4 w-4 mr-4 text-accent-primary" /> My Garage
+                    <Link to="/garage" className="flex items-center px-5 py-3 text-xs font-bold uppercase tracking-widest text-slate-300 hover:bg-white/5 hover:text-white transition-all">
+                      <Car className="h-4 w-4 mr-3 text-accent-primary" /> My Garage
                     </Link>
-                    <div className="px-4 mt-2">
-                      <button onClick={handleLogout} className="w-full flex items-center px-4 py-3.5 text-[10px] font-black uppercase tracking-widest text-accent-error bg-accent-error/10 hover:bg-accent-error hover:text-white rounded-2xl transition-all">
-                        <LogOut className="h-4 w-4 mr-4" /> Terminate Session
+                    <div className="px-3 mt-2">
+                      <button onClick={handleLogout} className="w-full flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-widest text-rose-400 bg-rose-500/10 hover:bg-rose-500 hover:text-white rounded-xl transition-all">
+                        <LogOut className="h-4 w-4 mr-2" /> Sign Out
                       </button>
                     </div>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
                 <Link
                   to="/login"
-                  className={`px-6 py-3 text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 ${isScrolled || !isHome ? 'text-white hover:text-accent-primary' : 'text-slate-600 hover:text-slate-900'}`}
+                  className="px-5 py-2.5 text-xs font-bold uppercase tracking-widest text-slate-300 hover:text-white transition-colors"
                 >
-                  Authorize
+                  Sign In
                 </Link>
                 <Link
                   to="/register"
-                  className="relative group px-8 py-3.5 rounded-xl bg-accent-primary text-white text-[10px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-accent-primary/20 hover:shadow-accent-primary/40 transition-all active:scale-95 overflow-hidden"
+                  className="relative group px-6 py-2.5 rounded-xl bg-gradient-to-r from-accent-primary to-orange-600 text-white text-xs font-bold uppercase tracking-widest shadow-lg shadow-accent-primary/25 hover:shadow-accent-primary/40 transition-all active:scale-95 overflow-hidden"
                 >
-                  <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
                   <span className="relative z-10 flex items-center gap-2">
-                    Initialize <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    Book Service <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </span>
                 </Link>
               </div>

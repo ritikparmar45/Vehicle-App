@@ -60,89 +60,93 @@ const ScrollToTop = () => {
   return null;
 };
 
+import { ErrorBoundary } from './components/Common/ErrorBoundary';
+
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <ScrollToTop />
-        <div className="min-h-screen bg-[#050505] flex flex-col selection:bg-accent-primary/20 selection:text-accent-primary">
-          <Navbar />
-          <main className="flex-grow pt-20">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/services" element={<Services />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route
-                path="/login"
-                element={
-                  <PublicRoute>
-                    <LoginForm />
-                  </PublicRoute>
-                }
-              />
-              <Route
-                path="/register"
-                element={
-                  <PublicRoute>
-                    <RegisterForm />
-                  </PublicRoute>
-                }
-              />
-              <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/book-service"
-                element={
-                  <ProtectedRoute>
-                    <BookService />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/admin"
-                element={
-                  <ProtectedRoute>
-                    <AdminDashboard />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/garage"
-                element={
-                  <ProtectedRoute>
-                    <Garage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/profile"
-                element={
-                  <ProtectedRoute>
-                    <ProfileDashboard />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/vault"
-                element={
-                  <ProtectedRoute>
-                    <ServiceVault />
-                  </ProtectedRoute>
-                }
-              />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
-      </Router>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <Router>
+          <ScrollToTop />
+          <div className="min-h-screen bg-[#050505] flex flex-col selection:bg-accent-primary/20 selection:text-accent-primary">
+            <Navbar />
+            <main className="flex-grow pt-20">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/services" element={<Services />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route
+                  path="/login"
+                  element={
+                    <PublicRoute>
+                      <LoginForm />
+                    </PublicRoute>
+                  }
+                />
+                <Route
+                  path="/register"
+                  element={
+                    <PublicRoute>
+                      <RegisterForm />
+                    </PublicRoute>
+                  }
+                />
+                <Route
+                  path="/dashboard"
+                  element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/book-service"
+                  element={
+                    <ProtectedRoute>
+                      <BookService />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin"
+                  element={
+                    <ProtectedRoute>
+                      <AdminDashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/garage"
+                  element={
+                    <ProtectedRoute>
+                      <Garage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/profile"
+                  element={
+                    <ProtectedRoute>
+                      <ProfileDashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/vault"
+                  element={
+                    <ProtectedRoute>
+                      <ServiceVault />
+                    </ProtectedRoute>
+                  }
+                />
+              </Routes>
+            </main>
+            <Footer />
+          </div>
+        </Router>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
 

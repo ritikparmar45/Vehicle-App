@@ -58,30 +58,37 @@ const RegisterForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] flex items-center justify-center py-24 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div className="bg-slate-900/50 rounded-[2.5rem] border border-white/5 p-12 shadow-2xl backdrop-blur-xl">
-          <div className="text-center">
-            <h2 className="text-4xl font-heading font-black text-white mb-3">Create Account</h2>
-            <p className="text-slate-400 font-medium">Join AutoCare today</p>
+    <div className="min-h-screen bg-[#050505] flex items-center justify-center py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Background Glow */}
+      <div className="absolute top-1/3 right-1/4 w-[30rem] h-[30rem] bg-accent-primary/10 blur-[140px] rounded-full pointer-events-none"></div>
+
+      <div className="max-w-lg w-full relative z-10 animate-fade-in">
+        <div className="glass-dark rounded-[2.5rem] border border-white/10 p-10 sm:p-12 shadow-2xl backdrop-blur-2xl space-y-8">
+          
+          <div className="text-center space-y-2">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-accent-primary/10 border border-accent-primary/20 text-accent-primary mb-2">
+              <User className="w-5 h-5" />
+            </div>
+            <h2 className="text-3xl font-heading font-black text-white tracking-tight">Create Account</h2>
+            <p className="text-slate-400 text-sm font-medium">Join AutoCare Precision Labs today</p>
           </div>
 
           {error && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center space-x-2">
-              <AlertCircle className="h-5 w-5 text-red-500" />
-              <span className="text-red-700 text-sm">{error}</span>
+            <div className="bg-rose-500/10 border border-rose-500/20 rounded-2xl p-4 flex items-center space-x-3 animate-slide-up">
+              <AlertCircle className="h-5 w-5 text-rose-400 flex-shrink-0" />
+              <span className="text-rose-300 text-xs font-semibold">{error}</span>
             </div>
           )}
 
-          <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <form className="space-y-5" onSubmit={handleSubmit}>
             <div className="space-y-4">
               <div>
-                <label htmlFor="name" className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
+                <label htmlFor="name" className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">
                   Full Name
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User className="h-5 w-5 text-slate-400" />
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <User className="h-5 w-5 text-slate-500" />
                   </div>
                   <input
                     id="name"
@@ -90,19 +97,19 @@ const RegisterForm = () => {
                     required
                     value={formData.name}
                     onChange={handleChange}
-                    className="input-field pl-14"
-                    placeholder="Enter your full name"
+                    className="input-field pl-12"
+                    placeholder="John Doe"
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
+                <label htmlFor="email" className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">
                   Email Address
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Mail className="h-5 w-5 text-slate-400" />
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <Mail className="h-5 w-5 text-slate-500" />
                   </div>
                   <input
                     id="email"
@@ -111,19 +118,19 @@ const RegisterForm = () => {
                     required
                     value={formData.email}
                     onChange={handleChange}
-                    className="input-field pl-14"
-                    placeholder="Enter your email"
+                    className="input-field pl-12"
+                    placeholder="name@example.com"
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="phone" className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
+                <label htmlFor="phone" className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">
                   Phone Number
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Phone className="h-5 w-5 text-slate-400" />
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <Phone className="h-5 w-5 text-slate-500" />
                   </div>
                   <input
                     id="phone"
@@ -132,55 +139,19 @@ const RegisterForm = () => {
                     required
                     value={formData.phone}
                     onChange={handleChange}
-                    className="input-field pl-14"
-                    placeholder="Enter your phone number"
+                    className="input-field pl-12"
+                    placeholder="+91 98765 43210"
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="address" className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
-                  Address (Optional)
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <MapPin className="h-5 w-5 text-slate-400" />
-                  </div>
-                  <input
-                    id="address"
-                    name="address"
-                    type="text"
-                    value={formData.address}
-                    onChange={handleChange}
-                    className="input-field pl-14"
-                    placeholder="Enter your address"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="role" className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
-                  Account Type
-                </label>
-                <select
-                  id="role"
-                  name="role"
-                  value={formData.role}
-                  onChange={handleChange}
-                  className="input-field appearance-none"
-                >
-                  <option value="user">Customer</option>
-                  <option value="mechanic">Mechanic</option>
-                </select>
-              </div>
-
-              <div>
-                <label htmlFor="password" className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
+                <label htmlFor="password" className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">
                   Password
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-slate-400" />
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <Lock className="h-5 w-5 text-slate-500" />
                   </div>
                   <input
                     id="password"
@@ -189,30 +160,26 @@ const RegisterForm = () => {
                     required
                     value={formData.password}
                     onChange={handleChange}
-                    className="input-field pl-14 pr-12"
-                    placeholder="Create a password"
+                    className="input-field pl-12 pr-12"
+                    placeholder="At least 6 characters"
                   />
                   <button
                     type="button"
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-white transition-colors"
                     onClick={() => setShowPassword(!showPassword)}
                   >
-                    {showPassword ? (
-                      <EyeOff className="h-5 w-5 text-slate-400" />
-                    ) : (
-                      <Eye className="h-5 w-5 text-slate-400" />
-                    )}
+                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                   </button>
                 </div>
               </div>
 
               <div>
-                <label htmlFor="confirmPassword" className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">
+                <label htmlFor="confirmPassword" className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">
                   Confirm Password
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-slate-400" />
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <Lock className="h-5 w-5 text-slate-500" />
                   </div>
                   <input
                     id="confirmPassword"
@@ -221,37 +188,32 @@ const RegisterForm = () => {
                     required
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    className="input-field pl-14 pr-12"
+                    className="input-field pl-12 pr-12"
                     placeholder="Confirm your password"
                   />
                   <button
                     type="button"
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-white transition-colors"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   >
-                    {showConfirmPassword ? (
-                      <EyeOff className="h-5 w-5 text-slate-400" />
-                    ) : (
-                      <Eye className="h-5 w-5 text-slate-400" />
-                    )}
+                    {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                   </button>
                 </div>
               </div>
-
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="btn-primary w-full py-4 rounded-2xl shadow-xl shadow-accent-primary/20 mt-4"
             >
-              {loading ? 'Creating Account...' : 'Create Account'}
+              {loading ? 'Creating Account...' : 'Initialize Registration'}
             </button>
 
-            <div className="text-center">
-              <p className="text-sm text-gray-600">
-                Already have an account?{' '}
-                <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
+            <div className="text-center pt-2">
+              <p className="text-xs font-medium text-slate-400">
+                Already registered?{' '}
+                <Link to="/login" className="font-bold text-accent-primary hover:underline transition-all">
                   Sign in here
                 </Link>
               </p>
